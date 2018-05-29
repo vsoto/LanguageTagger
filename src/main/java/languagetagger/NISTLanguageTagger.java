@@ -2,9 +2,9 @@ package languagetagger;
 
 import language_id.LanguageDetector;
 import language_id.Result;
+import Utils.Utils;
 
 import com.aliasi.util.Strings;
-import edu.columbia.main.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
