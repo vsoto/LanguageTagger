@@ -6,7 +6,7 @@ import main.java.Utils.Utils;
 
 import com.aliasi.util.Strings;
 import org.apache.commons.io.FileUtils;
-// import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,12 +28,14 @@ import java.nio.charset.StandardCharsets;
  */
 public class NISTLanguageTagger {
 
-    // static Logger log = Logger.getLogger(NISTLanguageTagger.class);
+    static Logger log = Logger.getLogger(NISTLanguageTagger.class);
     static LanguageDetector lp = new LanguageDetector();
 
     public static void start(String dirIn, String dirOut, String langCode) throws Exception {
         File dir = new File(dirIn);
+        System.out.println(dirIn);
         File[] listOfFiles = dir.listFiles();
+        System.out.println(listOfFiles);
 
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
