@@ -38,7 +38,7 @@ public class NISTLanguageTagger {
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
-                System.out.println(filename);
+                // System.out.println(filename);
                 if (filename.endsWith(".txt")) {
                     processTextFile(dirIn + "/" + filename, dirOut + "/" + filename, langCode);
                 }
