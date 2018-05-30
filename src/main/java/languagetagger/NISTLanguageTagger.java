@@ -6,7 +6,7 @@ import main.java.Utils.Utils;
 
 import com.aliasi.util.Strings;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+// import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
