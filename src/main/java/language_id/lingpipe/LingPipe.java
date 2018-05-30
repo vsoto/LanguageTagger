@@ -1,8 +1,8 @@
-package language_id.lingpipe;
+package main.java.language_id.lingpipe;
 
-import language_id.LanguageClassifier;
-import language_id.LanguageCode;
-import language_id.Result;
+import main.java.language_id.LanguageClassifier;
+import main.java.language_id.LanguageCode;
+import main.java.language_id.Result;
 
 import com.aliasi.classify.*;
 import com.aliasi.util.AbstractExternalizable;

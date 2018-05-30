@@ -1,6 +1,6 @@
-package language_id.cld;
+package main.java.language_id.cld;
 
-import language_id.Result;
+import main.java.language_id.Result;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 

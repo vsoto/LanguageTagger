@@ -1,4 +1,4 @@
-package language_id.com.detectLanguage.responses;
+package main.java.language_id.com.detectLanguage.responses;
 
 import java.util.Date;
 

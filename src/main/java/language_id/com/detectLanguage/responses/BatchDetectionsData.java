@@ -1,6 +1,6 @@
-package language_id.com.detectLanguage.responses;
+package main.java.language_id.com.detectLanguage.responses;
 
-import language_id.Result;
+import main.java.language_id.Result;
 
 import java.util.List;
 

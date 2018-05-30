@@ -1,4 +1,4 @@
-package language_id.textcat;
+package main.java.language_id.textcat;
 
 import org.apache.log4j.Logger;
 

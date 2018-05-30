@@ -1,4 +1,4 @@
-package language_id;
+package main.java.language_id;
 
 import org.apache.log4j.Logger;
 

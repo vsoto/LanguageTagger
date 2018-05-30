@@ -1,4 +1,4 @@
-package language_id;
+package main.java.language_id;
 
 import com.neovisionaries.i18n.LanguageAlpha3Code;
 import com.sun.org.apache.bcel.internal.classfile.Code;

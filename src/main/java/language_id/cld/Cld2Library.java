@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package language_id.cld;
+package main.java.language_id.cld;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;

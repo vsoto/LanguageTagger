@@ -1,8 +1,8 @@
-package language_id.com.detectLanguage;
+package main.java.language_id.com.detectLanguage;
 
-import language_id.com.detectLanguage.errors.APIError;
-import language_id.com.detectLanguage.responses.ErrorData;
-import language_id.com.detectLanguage.responses.ErrorResponse;
+import main.java.language_id.com.detectLanguage.errors.APIError;
+import main.java.language_id.com.detectLanguage.responses.ErrorData;
+import main.java.language_id.com.detectLanguage.responses.ErrorResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;

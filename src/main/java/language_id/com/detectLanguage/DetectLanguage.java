@@ -1,10 +1,10 @@
-package language_id.com.detectLanguage;
+package main.java.language_id.com.detectLanguage;
 
-import language_id.com.detectLanguage.responses.BatchDetectResponse;
-import language_id.Result;
-import language_id.com.detectLanguage.errors.APIError;
-import language_id.com.detectLanguage.responses.DetectResponse;
-import language_id.com.detectLanguage.responses.StatusResponse;
+import main.java.language_id.com.detectLanguage.responses.BatchDetectResponse;
+import main.java.language_id.Result;
+import main.java.language_id.com.detectLanguage.errors.APIError;
+import main.java.language_id.com.detectLanguage.responses.DetectResponse;
+import main.java.language_id.com.detectLanguage.responses.StatusResponse;
 
 import java.util.HashMap;
 import java.util.List;

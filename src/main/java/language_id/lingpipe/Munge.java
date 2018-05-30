@@ -1,4 +1,4 @@
-package language_id.lingpipe;
+package main.java.language_id.lingpipe;
 
 import org.apache.log4j.Logger;
 

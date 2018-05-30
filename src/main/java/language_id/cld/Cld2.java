@@ -1,4 +1,4 @@
-package language_id.cld;/*
+package main.java.language_id.cld;/*
  * Copyright 2014-present Deezer.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@ package language_id.cld;/*
  */
 
 
-import language_id.*;
-import language_id.Result;
+import main.java.language_id.*;
+import main.java.language_id.Result;
 
 import java.io.IOException;
 

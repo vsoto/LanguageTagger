@@ -1,8 +1,8 @@
-package language_id;
+package main.java.language_id;
 
-import language_id.cld.Cld2;
-import language_id.lingpipe.LingPipe;
-import language_id.textcat.TextCategorizer;
+import main.java.language_id.cld.Cld2;
+import main.java.language_id.lingpipe.LingPipe;
+import main.java.language_id.textcat.TextCategorizer;
 
 import Utils.Utils;
 

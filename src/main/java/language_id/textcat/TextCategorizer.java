@@ -1,8 +1,8 @@
-package language_id.textcat;
+package main.java.language_id.textcat;
 
-import language_id.LanguageClassifier;
-import language_id.LanguageCode;
-import language_id.Result;
+import main.java.language_id.LanguageClassifier;
+import main.java.language_id.LanguageCode;
+import main.java.language_id.Result;
 
 import org.apache.log4j.Logger;
 

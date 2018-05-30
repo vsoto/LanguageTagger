@@ -1,4 +1,4 @@
-package language_id.com.detectLanguage.errors;
+package main.java.language_id.com.detectLanguage.errors;
 
 @SuppressWarnings("serial")
 public class APIError1 extends Exception {

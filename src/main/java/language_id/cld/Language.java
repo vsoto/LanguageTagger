@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package language_id.cld;
+package main.java.language_id.cld;
 /**
  * Enum with the values of the different languages accepted by the CLD2 library.
  */

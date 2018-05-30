@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package language_id.cld;
+package main.java.language_id.cld;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import java.util.Arrays;

@@ -1,8 +1,8 @@
-package languagetagger;
+package main.java.languagetagger;
 
-import language_id.LanguageDetector;
-import language_id.Result;
-import Utils.Utils;
+import main.java.language_id.LanguageDetector;
+import main.java.language_id.Result;
+import main.java.Utils.Utils;
 
 import com.aliasi.util.Strings;
 import org.apache.commons.io.FileUtils;
