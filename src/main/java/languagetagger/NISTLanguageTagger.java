@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class NISTLanguageTagger {
 
-    static Logger log = Logger.getLogger(NISTLanguageTagger.class);
+    // static Logger log = Logger.getLogger(NISTLanguageTagger.class);
     static LanguageDetector lp = new LanguageDetector();
 
     public static void start(String dirIn, String dirOut, String langCode) throws Exception {
