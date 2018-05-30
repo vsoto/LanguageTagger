@@ -4,7 +4,7 @@ import main.java.language_id.cld.Cld2;
 import main.java.language_id.lingpipe.LingPipe;
 import main.java.language_id.textcat.TextCategorizer;
 
-import Utils.Utils;
+import main.java.Utils.Utils;
 
 import org.apache.log4j.Logger;
 
