@@ -34,7 +34,7 @@ public class LanguageDetector {
 
     /* Constructor */
     public LanguageDetector(){
-        tc = new language_id.textcat.TextCategorizer();
+        tc = new TextCategorizer();
         try {
             cld = new Cld2();
         }
