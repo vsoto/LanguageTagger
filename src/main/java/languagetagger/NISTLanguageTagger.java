@@ -77,24 +77,21 @@ public class NISTLanguageTagger {
         bw.close();
     }
 
-    public String tag_document_string(String document) {
+    public JsonObject tag_document_string(String document) {
         String[] lines = document.split("\n");
 
-        String outputBlock = "";
+        JsonObject jsonDoc = new JsonObject();
         String text = "";
         for (int i = 0; i < lines.length; ++i) {
             String line = lines[i];
             if (!line.isEmpty()) {
                 text += line + "\n";
-                outputBlock += tag_line(line);
+                JsonObject jsonLine = tag_line(line);
+                jsonDoc.add("sentence", jsonLine);
             }
         }
-        String json_document;
-        json_document = outputHeaderDoc(text);
-        json_document += outputBlock;
-        json_document += outputEndDoc();
-        return json_document;
-
+        jsonDoc = outputHeaderDoc(jsonDoc);
+        return jsonDoc;
     }
 
     public JsonObject tag_line(String line){
@@ -141,11 +138,19 @@ public class NISTLanguageTagger {
         return anchors;
     }
 
-    private String outputHeaderDoc(String doc) {
+    private JsonObject outputHeaderDoc(JsonObject doc) {
         Result res = lp.detectLanguage(doc, this.languageCode);
-        String output = "<doc " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
-        return output;
+        doc.addProperty("engine", res.engine);
+        doc.addProperty("languageCode", res.languageCode);
+        doc.addProperty("score", res.confidence);
+        return doc;
     }
+    
+//    private String outputHeaderDoc(String doc) {
+//        Result res = lp.detectLanguage(doc, this.languageCode);
+//        String output = "<doc " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
+//        return output;
+//    }
 
 //    private static String outputEndDoc() {
 //        return "</doc>\n";
