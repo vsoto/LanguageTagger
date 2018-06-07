@@ -90,7 +90,7 @@ public class NISTLanguageTagger {
                 jsonDoc.add("sentence", jsonLine);
             }
         }
-        jsonDoc = outputHeaderDoc(jsonDoc);
+        jsonDoc = outputHeaderDoc(jsonDoc, text);
         return jsonDoc;
     }
 
@@ -138,8 +138,8 @@ public class NISTLanguageTagger {
         return anchors;
     }
 
-    private JsonObject outputHeaderDoc(JsonObject doc) {
-        Result res = lp.detectLanguage(doc, this.languageCode);
+    private JsonObject outputHeaderDoc(JsonObject doc, String text) {
+        Result res = lp.detectLanguage(text, this.languageCode);
         doc.addProperty("engine", res.engine);
         doc.addProperty("languageCode", res.languageCode);
         doc.addProperty("score", res.confidence);
