@@ -177,7 +177,7 @@ public class NISTLanguageTagger {
             } else if (this.engAnchors.contains(token)) {
                 tokenJson.addProperty("anchor", "eng");
             }
-            lineJson.addProperty("word", tokenJson);
+            lineJson.add("word", tokenJson);
         }
         return lineJson;
     }
