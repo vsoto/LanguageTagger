@@ -94,11 +94,11 @@ public class NISTLanguageTagger {
     public JsonObject tag_line(String line){
         JsonObject sentenceJson = new JsonObject();
         JsonObject tokensJson = processLine(line);
-        sentenceJson.addProperties("items", tokensJson);
+        sentenceJson.addProperty("items", tokensJson);
         Result res = lp.detectLanguage(line, this.languageCode);
-        sentenceJson.addProperties("engine", res.engine);
-        sentenceJson.addProperties("languageCode", res.languageCode);
-        sentenceJson.addProperties("score", res.confidence);
+        sentenceJson.addProperty("engine", res.engine);
+        sentenceJson.addProperty("languageCode", res.languageCode);
+        sentenceJson.addProperty("score", res.confidence);
         return sentenceJson;
     }
 
