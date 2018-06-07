@@ -94,7 +94,7 @@ public class NISTLanguageTagger {
     public JsonObject tag_line(String line){
         JsonObject sentenceJson = new JsonObject();
         JsonObject tokensJson = processLine(line);
-        sentenceJson.addProperty("items", tokensJson);
+        sentenceJson.add("items", tokensJson);
         Result res = lp.detectLanguage(line, this.languageCode);
         sentenceJson.addProperty("engine", res.engine);
         sentenceJson.addProperty("languageCode", res.languageCode);
