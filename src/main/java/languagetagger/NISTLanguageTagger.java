@@ -88,7 +88,7 @@ public class NISTLanguageTagger {
             if (!line.isEmpty()) {
                 text += line + "\n";
                 JsonObject jsonLine = tag_line(line);
-                list.put(jsonLine);
+                list.add(jsonLine);
             }
         }
         JsonObject jsonDoc = new JsonObject();
