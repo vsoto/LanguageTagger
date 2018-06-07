@@ -5,6 +5,7 @@ import main.java.language_id.Result;
 import main.java.Utils.Utils;
 
 import com.aliasi.util.Strings;
+import com.google.gson.JsonObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -46,14 +47,11 @@ public class NISTLanguageTagger {
 
     public void tag_directory(String dirIn, String dirOut) throws Exception {
         File dir = new File(dirIn);
-        // System.out.println(dirIn);
         File[] listOfFiles = dir.listFiles();
-        // System.out.println(listOfFiles);
 
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
-                // System.out.println(filename);
                 if (filename.endsWith(".txt")) {
                     tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
                 }
@@ -65,31 +63,12 @@ public class NISTLanguageTagger {
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
 
-        // File contentFile = new File(pathFileIn);
-        // BufferedReader br = new BufferedReader(new FileReader(contentFile));
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
         String tagged_document_string = tag_document_string(document_string);
 
         bw.write(tagged_document_string);
         bw.close();
-
-//        String line;
-//
-//        String outputBlock = "";
-//        String text = "";
-//        while ((line = br.readLine()) != null) {
-//            if (!line.isEmpty()) {
-//                text += line + "\n";
-//                outputBlock += outputTaggingLine(line);
-//            }
-//        }
-//        bw.write(outputTaggingDoc(text));
-//        bw.write(outputBlock);
-//        bw.write(outputEndDoc());
-//
-//        br.close();
-//        bw.close();
     }
 
     public String tag_document_string(String document) {
@@ -112,10 +91,15 @@ public class NISTLanguageTagger {
 
     }
 
-    public String tag_line(String line){
+    public JsonObject tag_line(String line){
+        JsonObject sentenceJson = new JsonObject();
+        JsonObject tokensJson = processLine(line);
+        sentenceJson.addProperties("items", tokensJson);
         Result res = lp.detectLanguage(line, this.languageCode);
-        String output = "<s> " + processLine(line) + " </s " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
-        return output;
+        sentenceJson.addProperties("engine", res.engine);
+        sentenceJson.addProperties("languageCode", res.languageCode);
+        sentenceJson.addProperties("score", res.confidence);
+        return sentenceJson;
     }
 
 //    private void processTranscriptionFile(String path, String saveTo) throws Exception {
@@ -151,14 +135,6 @@ public class NISTLanguageTagger {
         return anchors;
     }
 
-//    private String outputTaggingLines(ArrayList<String> lines) {
-//        String output = "";
-//        for (String line : lines) {
-//            output += outputTaggingLine(line);
-//        }
-//        return output;
-//    }
-
     private String outputHeaderDoc(String doc) {
         Result res = lp.detectLanguage(doc, this.languageCode);
         String output = "<doc " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
@@ -189,44 +165,22 @@ public class NISTLanguageTagger {
 //        return output;
 //    }
 
-    public String processLine(String line) {
+    private JsonObject processLine(String line) {
         String[] tokens = line.split(" ");
-        String newLine = "";
+        JsonObject lineJson = new JsonObject();
         for (String token : tokens) {
             token = token.toLowerCase();
+            JsonObject tokenJson = new JsonObject();
+            tokenJson.addProperty("token", token);
             if (this.langAnchors.contains(token)) {
-                newLine += "<" + token + ":" + this.languageCode + "> ";
+                tokenJson.addProperty("anchor", this.languageCode);
             } else if (this.engAnchors.contains(token)) {
-                newLine += "<" + token + ":eng> ";
-            } else {
-                newLine += token + " ";
+                tokenJson.addProperty("anchor", "eng");
             }
+            lineJson.addProperty("word", tokenJson);
         }
-        return newLine;
+        return lineJson;
     }
-
-//    public static int countWords(String s) {
-//        int wordCount = 0;
-//        boolean word = false;
-//        int endOfLine = s.length() - 1;
-//
-//        for (int i = 0; i < s.length(); i++) {
-//            // if the char is a letter, word = true.
-//            if (Character.isLetter(s.charAt(i)) && i != endOfLine) {
-//                word = true;
-//                // if char isn't a letter and there have been letters before,
-//                // counter goes up.
-//            } else if (!Character.isLetter(s.charAt(i)) && word) {
-//                wordCount++;
-//                word = false;
-//                // last word of String; if it doesn't end with a non letter, it
-//                // wouldn't count without this.
-//            } else if (Character.isLetter(s.charAt(i)) && i == endOfLine) {
-//                wordCount++;
-//            }
-//        }
-//        return wordCount;
-//    }
 
     private static String makeAttribute(String att, String value) {
         return att + "=\"" + value + "\" ";
