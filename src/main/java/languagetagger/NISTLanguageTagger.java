@@ -5,7 +5,10 @@ import main.java.language_id.Result;
 import main.java.Utils.Utils;
 
 import com.aliasi.util.Strings;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -65,9 +68,12 @@ public class NISTLanguageTagger {
 
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
-        String tagged_document_string = tag_document_string(document_string);
-
-        bw.write(tagged_document_string);
+        JsonObject tagged_document_json = tag_document_string(document_string);
+        
+        
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = gson.toJson(tagged_document_json);
+        bw.write(prettyJson);
         bw.close();
     }
 
@@ -141,9 +147,9 @@ public class NISTLanguageTagger {
         return output;
     }
 
-    private static String outputEndDoc() {
-        return "</doc>\n";
-    }
+//    private static String outputEndDoc() {
+//        return "</doc>\n";
+//    }
 
 //    private String outputTranscriptionLine(String line) {
 //        Pattern pattern = Pattern.compile("[0-9]*\\.?[0-9]+");
