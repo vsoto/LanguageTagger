@@ -7,6 +7,7 @@ import main.java.Utils.Utils;
 import com.aliasi.util.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.apache.commons.io.FileUtils;
@@ -80,16 +81,19 @@ public class NISTLanguageTagger {
     public JsonObject tag_document_string(String document) {
         String[] lines = document.split("\n");
 
-        JsonObject jsonDoc = new JsonObject();
+        
         String text = "";
+        JsonArray list = new JsonArray();
         for (int i = 0; i < lines.length; ++i) {
             String line = lines[i];
             if (!line.isEmpty()) {
                 text += line + "\n";
                 JsonObject jsonLine = tag_line(line);
-                jsonDoc.add("sentence", jsonLine);
+                list.put(jsonLine);
             }
         }
+        JsonObject jsonDoc = new JsonObject();
+        jsonDoc.add("sentences", list);
         jsonDoc = outputHeaderDoc(jsonDoc, text);
         return jsonDoc;
     }
