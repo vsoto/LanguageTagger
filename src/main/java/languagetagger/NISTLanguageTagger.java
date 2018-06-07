@@ -81,7 +81,6 @@ public class NISTLanguageTagger {
     public JsonObject tag_document_string(String document) {
         String[] lines = document.split("\n");
 
-        
         String text = "";
         JsonArray list = new JsonArray();
         for (int i = 0; i < lines.length; ++i) {
