@@ -181,7 +181,7 @@ public class NISTLanguageTagger {
 
     private JsonArray processLine(String line) {
         String[] tokens = line.split(" ");
-        JsonArray lineJson = new JsonObject();
+        JsonArray lineJson = new JsonArray();
         for (String token : tokens) {
             token = token.toLowerCase();
             JsonObject tokenJson = new JsonObject();
