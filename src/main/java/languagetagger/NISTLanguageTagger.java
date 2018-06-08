@@ -99,7 +99,7 @@ public class NISTLanguageTagger {
 
     public JsonObject tag_line(String line){
         JsonObject sentenceJson = new JsonObject();
-        JsonObject tokensJson = processLine(line);
+        JsonArray tokensJson = processLine(line);
         sentenceJson.add("items", tokensJson);
         Result res = lp.detectLanguage(line, this.languageCode);
         sentenceJson.addProperty("engine", res.engine);
@@ -179,9 +179,9 @@ public class NISTLanguageTagger {
 //        return output;
 //    }
 
-    private JsonObject processLine(String line) {
+    private JsonArray processLine(String line) {
         String[] tokens = line.split(" ");
-        JsonObject lineJson = new JsonObject();
+        JsonArray lineJson = new JsonObject();
         for (String token : tokens) {
             token = token.toLowerCase();
             JsonObject tokenJson = new JsonObject();
@@ -191,7 +191,7 @@ public class NISTLanguageTagger {
             } else if (this.engAnchors.contains(token)) {
                 tokenJson.addProperty("anchor", "eng");
             }
-            lineJson.add("word", tokenJson);
+            lineJson.add(tokenJson);
         }
         return lineJson;
     }
