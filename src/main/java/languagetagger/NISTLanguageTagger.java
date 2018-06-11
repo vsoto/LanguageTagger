@@ -61,13 +61,6 @@ public class NISTLanguageTagger {
     }
 
     public void tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
-        File fileOut = new File(pathFileOut);
-        //change permission to 777 for all the users
-        fileOut.setExecutable(true, false);
-        fileOut.setReadable(true, false);
-        fileOut.setWritable(true, false);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
-
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
         JsonObject tagged_document_json = tag_document_string(document_string);
@@ -75,8 +68,15 @@ public class NISTLanguageTagger {
         
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String prettyJson = gson.toJson(tagged_document_json);
+        
+        File fileOut = new File(pathFileOut);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
         bw.write(prettyJson);
         bw.close();
+        //change permission to 777 for all the users
+        fileOut.setExecutable(true, false);
+        fileOut.setReadable(true, false);
+        fileOut.setWritable(true, false);
     }
 
     public JsonObject tag_document_string(String document) {
