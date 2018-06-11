@@ -31,9 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Created by Gideon on 2/24/15.
- */
 public class NISTLanguageTagger {
 
     static Logger log = Logger.getLogger(NISTLanguageTagger.class);
@@ -65,6 +62,10 @@ public class NISTLanguageTagger {
 
     public void tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
         File fileOut = new File(pathFileOut);
+        //change permission to 777 for all the users
+        fileOut.setExecutable(true, false);
+        fileOut.setReadable(true, false);
+        fileOut.setWritable(true, false);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
 
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
@@ -97,7 +98,7 @@ public class NISTLanguageTagger {
         return jsonDoc;
     }
 
-    public JsonObject tag_line(String line){
+    public JsonObject tag_line(String line) {
         JsonObject sentenceJson = new JsonObject();
         JsonArray tokensJson = processLine(line);
         sentenceJson.add("items", tokensJson);
