@@ -87,15 +87,12 @@ public class Cld2 extends LanguageClassifier {
               textBytes,
               isReliable);
 
-      System.out.println("HI");
+      
       LanguageCode lc = new LanguageCode(getLanguageCode(language), LanguageCode.CodeTypes.ISO_639_1);
-      System.out.println("HII");
       String bestLang = lc.getLanguageCode();
-      System.out.println("HIII");
-      if (bestLang.equals("swh")) {
+      if (bestLang!=null && bestLang.equals("swh")) {
           bestLang = "swa";
       }
-      System.out.println("HIIII");
       return new Result(bestLang, isReliable[0], percent3[0] / 100.0, "cld2");
 
     }

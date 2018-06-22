@@ -52,7 +52,7 @@ public class LingPipe extends LanguageClassifier{
 
         JointClassification classification = (JointClassification) this.classifier.classify(text);
         String bestLang = classification.bestCategory();
-        if (bestLang.equals("swh")) {
+        if (bestLang!=null && bestLang.equals("swh")) {
             bestLang = "swa";
         }
         double probability = classification.conditionalProbability(0);

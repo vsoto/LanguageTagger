@@ -78,14 +78,12 @@ public class LanguageDetector {
             Result pred = tc.detectLanguage(text);
             results.add(pred);
         }
-        log.info("3");
+        
         if (cld.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            log.info("3.5");
             Result pred = cld.detectLanguage(text);
-            log.info("4");
             results.add(pred);
         }
-        log.info("Out");
+        
 
         Result res = mostCommon(results);
         if (res == null) {

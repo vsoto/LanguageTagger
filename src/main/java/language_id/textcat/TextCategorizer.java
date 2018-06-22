@@ -38,7 +38,7 @@ public class TextCategorizer extends LanguageClassifier{
                 fp.create(text);
                 fp.categorize(categories);
                 String bestLang = fp.getCategory();
-                if (bestLang.equals("swh")) {
+                if (bestLang!=null && bestLang.equals("swh")) {
                     bestLang = "swa";
                 }
 		return new Result(bestLang, true, fp.getConfidence(), "textcat");
