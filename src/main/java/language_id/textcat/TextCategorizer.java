@@ -37,7 +37,11 @@ public class TextCategorizer extends LanguageClassifier{
                 FingerPrint fp = new FingerPrint();
                 fp.create(text);
                 fp.categorize(categories);
-		return new Result(fp.getCategory(), true, fp.getConfidence(), "textcat");
+                String bestLang = fp.getCategory();
+                if (bestLang.equals("swh")) {
+                    bestLang = "swa";
+                }
+		return new Result(bestLang, true, fp.getConfidence(), "textcat");
 	}
 
 
