@@ -63,17 +63,15 @@ public class LanguageDetector {
         if (cld == null) { //if we can't load CLD no point in doing majority vote
             return detectLanguage(text, lang);
         }
-        log.info("In");
-
+        
         ArrayList<Result> results = new ArrayList<>();
         LanguageCode code = new LanguageCode(lang, LanguageCode.CodeTypes.ISO_639_2);
 
-        log.info("1");
         if (lp.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = lp.detectLanguage(text);
             results.add(pred);
         }
-        log.info("2");
+        
         if (tc.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = tc.detectLanguage(text);
             results.add(pred);
@@ -87,7 +85,6 @@ public class LanguageDetector {
 
         Result res = mostCommon(results);
         if (res == null) {
-            log.info("NULL result");
             return new Result(null, false, 0);
         } else {
             return res;
@@ -139,11 +136,8 @@ public class LanguageDetector {
     public Result detectLanguage(String text, String lang) {
         try {
             if (cld != null) {
-                log.info("Entering majority vote");
-                log.info(text);
                 return detectMajorityVote(text, lang);
             } else {
-                log.info("Entering hierarchical");
                 return detectHierarchy(text, lang);
             }
 
