@@ -63,6 +63,7 @@ public class LanguageDetector {
         if (cld == null) { //if we can't load CLD no point in doing majority vote
             return detectLanguage(text, lang);
         }
+        log.info("In");
 
         ArrayList<Result> results = new ArrayList<>();
         LanguageCode code = new LanguageCode(lang, LanguageCode.CodeTypes.ISO_639_2);
@@ -82,6 +83,7 @@ public class LanguageDetector {
 
         Result res = mostCommon(results);
         if (res == null) {
+            log.info("NULL result");
             return new Result(null, false, 0);
         } else {
             return res;
@@ -134,6 +136,7 @@ public class LanguageDetector {
         try {
             if (cld != null) {
                 log.info("Entering majority vote");
+                log.info(text);
                 return detectMajorityVote(text, lang);
             } else {
                 log.info("Entering hierarchical");
