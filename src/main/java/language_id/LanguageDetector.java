@@ -68,18 +68,22 @@ public class LanguageDetector {
         ArrayList<Result> results = new ArrayList<>();
         LanguageCode code = new LanguageCode(lang, LanguageCode.CodeTypes.ISO_639_2);
 
+        log.info("1");
         if (lp.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = lp.detectLanguage(text);
             results.add(pred);
         }
+        log.info("2");
         if (tc.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = tc.detectLanguage(text);
             results.add(pred);
         }
+        log.info("3");
         if (cld.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = cld.detectLanguage(text);
             results.add(pred);
         }
+        log.info("Out");
 
         Result res = mostCommon(results);
         if (res == null) {
