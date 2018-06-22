@@ -133,8 +133,10 @@ public class LanguageDetector {
     public Result detectLanguage(String text, String lang) {
         try {
             if (cld != null) {
+                log.info("Entering majority vote");
                 return detectMajorityVote(text, lang);
             } else {
+                log.info("Entering hierarchical");
                 return detectHierarchy(text, lang);
             }
 
