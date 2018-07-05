@@ -103,7 +103,7 @@ public class NISTLanguageTagger {
         fileOut.setReadable(true, false);
         fileOut.setWritable(true, false);
         
-        String predictedLang = tagged_document_json.get("languageCode");
+        String predictedLang = tagged_document_json.get("languageCode").getAsString();
         return predictedLang;
     }
 
