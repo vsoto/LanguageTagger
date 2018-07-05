@@ -27,6 +27,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+import java.util.AbstractMap.SimpleEntry;
+
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
@@ -71,9 +74,11 @@ public class NISTLanguageTagger {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
                 if (filename.endsWith(".txt")) {
-                    String predictedLang = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
+                    SimpleEntry<String,String> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
+                    String predictedLang = result.getKey();
+                    String confidence = result.getValue();
                     if (predictedLang.equals(this.languageCode)) {
-                        bw.write(filename + "\n");
+                        bw.write(filename + "\t" + confidence +  "\n");
                     }
                 }
             }
@@ -86,7 +91,7 @@ public class NISTLanguageTagger {
         fileOut.setWritable(true, false);
     }
 
-    public String tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
+    public SimpleEntry<String, String> tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
         JsonObject tagged_document_json = tag_document_string(document_string);
@@ -104,7 +109,8 @@ public class NISTLanguageTagger {
         fileOut.setWritable(true, false);
         
         String predictedLang = tagged_document_json.get("languageCode").getAsString();
-        return predictedLang;
+        String confidence = tagged_document_json.get("score").getAsString();
+        return new SimpleEntry<>(predictedLang, confidence);
     }
 
     public JsonObject tag_document_string(String document) {
