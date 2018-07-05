@@ -39,36 +39,61 @@ public class NISTLanguageTagger {
     private final HashSet<String> langAnchors;
     private final HashSet<String> engAnchors;
     private final String languageCode;
+    private final String nistCode;
 
     NISTLanguageTagger(String languageCode) throws Exception {
         this.languageCode = languageCode;
+        this.nistCode = get_nist_code(this.languageCode);
         this.langAnchors = loadAnchors(languageCode, languageCode);
         this.engAnchors = loadAnchors(languageCode, "eng");
     }
 
-    public void tag_directory(String dirIn, String dirOut) throws Exception {
+    public static String get_nist_code(String languageCode) {
+        switch (languageCode) {
+            case "swa":
+                return "1A";
+            case "tgl":
+                return "1B";
+            default:
+                return "1X";       
+        }
+    }
+
+    public void tag_directory(String dirIn, String dirOut, String pathFileOut) throws Exception {
         File dir = new File(dirIn);
         File[] listOfFiles = dir.listFiles();
-
+        
+        File fileOut = new File(pathFileOut);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
+        bw.write(this.nistCode + "\n");
+        
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
                 if (filename.endsWith(".txt")) {
-                    tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
+                    String predictedLang = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
+                    if (predictedLang.equals(this.languageCode)) {
+                        bw.write(filename + "\n");
+                    }
                 }
             }
         }
+        
+        bw.close();
+        //change permission to 777 for all the users
+        fileOut.setExecutable(true, false);
+        fileOut.setReadable(true, false);
+        fileOut.setWritable(true, false);
     }
 
-    public void tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
+    public String tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
         JsonObject tagged_document_json = tag_document_string(document_string);
-        
-        
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String prettyJson = gson.toJson(tagged_document_json);
-        
+
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
         bw.write(prettyJson);
@@ -77,6 +102,9 @@ public class NISTLanguageTagger {
         fileOut.setExecutable(true, false);
         fileOut.setReadable(true, false);
         fileOut.setWritable(true, false);
+        
+        String predictedLang = tagged_document_json.getValue("languageCode");
+        return predictedLang;
     }
 
     public JsonObject tag_document_string(String document) {
@@ -129,7 +157,6 @@ public class NISTLanguageTagger {
 //        br.close();
 //        bw.close();
 //    }
-
     private HashSet<String> loadAnchors(String primaryLang, String langCode) throws Exception {
         HashSet<String> anchors = new HashSet<String>();
         String anchorsFilename = "weak_anchors/" + primaryLang + "/" + langCode + "_anchors.txt";
@@ -155,11 +182,9 @@ public class NISTLanguageTagger {
 //        String output = "<doc " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
 //        return output;
 //    }
-
 //    private static String outputEndDoc() {
 //        return "</doc>\n";
 //    }
-
 //    private String outputTranscriptionLine(String line) {
 //        Pattern pattern = Pattern.compile("[0-9]*\\.?[0-9]+");
 //        String output;
@@ -179,7 +204,6 @@ public class NISTLanguageTagger {
 //        }
 //        return output;
 //    }
-
     private JsonArray processLine(String line) {
         String[] tokens = line.split(" ");
         JsonArray lineJson = new JsonArray();
@@ -203,7 +227,7 @@ public class NISTLanguageTagger {
 
     public static void main(String[] args) throws Exception {
         NISTLanguageTagger lt = new NISTLanguageTagger(args[0]);
-        lt.tag_directory(args[1], args[2]);
+        lt.tag_directory(args[1], args[2], args[3]);
     }
 
 }
