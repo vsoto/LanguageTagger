@@ -29,7 +29,6 @@ import java.io.OutputStreamWriter;
 
 import java.util.AbstractMap.SimpleEntry;
 
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
@@ -58,32 +57,35 @@ public class NISTLanguageTagger {
             case "tgl":
                 return "1B";
             default:
-                return "1X";       
+                return "1X";
         }
     }
 
     public void tag_directory(String dirIn, String dirOut, String pathFileOut) throws Exception {
         File dir = new File(dirIn);
         File[] listOfFiles = dir.listFiles();
-        
+
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
         bw.write(this.nistCode + "\n");
-        
+
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
-                if (filename.endsWith(".txt")) {
-                    SimpleEntry<String,String> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
-                    String predictedLang = result.getKey();
-                    String confidence = result.getValue();
-                    if (predictedLang.equals(this.languageCode)) {
-                        bw.write(filename + "\t" + confidence +  "\n");
-                    }
+                String docId = filename.substring(0, filename.indexOf("."));
+                System.out.println(filename);
+                System.out.println(docId);
+                // if (filename.endsWith(".txt")) {
+                SimpleEntry<String, String> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
+                String predictedLang = result.getKey();
+                String confidence = result.getValue();
+                if (predictedLang.equals(this.languageCode)) {
+                    bw.write(docId + "\t" + confidence + "\n");
                 }
+                // }
             }
         }
-        
+
         bw.close();
         //change permission to 777 for all the users
         fileOut.setExecutable(true, false);
@@ -107,7 +109,7 @@ public class NISTLanguageTagger {
         fileOut.setExecutable(true, false);
         fileOut.setReadable(true, false);
         fileOut.setWritable(true, false);
-        
+
         String predictedLang = tagged_document_json.get("languageCode").getAsString();
         String confidence = tagged_document_json.get("score").getAsString();
         return new SimpleEntry<>(predictedLang, confidence);
@@ -182,7 +184,7 @@ public class NISTLanguageTagger {
         doc.addProperty("score", res.confidence);
         return doc;
     }
-    
+
 //    private String outputHeaderDoc(String doc) {
 //        Result res = lp.detectLanguage(doc, this.languageCode);
 //        String output = "<doc " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
