@@ -73,12 +73,10 @@ public class NISTLanguageTagger {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
                 String docId = filename.substring(0, filename.indexOf("."));
-                System.out.println(filename);
-                System.out.println(docId);
                 // if (filename.endsWith(".txt")) {
-                SimpleEntry<String, String> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
+                SimpleEntry<String, Double> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
                 String predictedLang = result.getKey();
-                String confidence = result.getValue();
+                String confidence = String.format("%.5f", result.getValue());
                 if (predictedLang.equals(this.languageCode)) {
                     bw.write(docId + "\t" + confidence + "\n");
                 }
@@ -93,7 +91,7 @@ public class NISTLanguageTagger {
         fileOut.setWritable(true, false);
     }
 
-    public SimpleEntry<String, String> tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
+    public SimpleEntry<String, Double> tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
         JsonObject tagged_document_json = tag_document_string(document_string);
@@ -111,7 +109,7 @@ public class NISTLanguageTagger {
         fileOut.setWritable(true, false);
 
         String predictedLang = tagged_document_json.get("languageCode").getAsString();
-        String confidence = tagged_document_json.get("score").getAsString();
+        Double confidence = tagged_document_json.get("score").getAsDouble();
         return new SimpleEntry<>(predictedLang, confidence);
     }
 
