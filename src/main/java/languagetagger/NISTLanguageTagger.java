@@ -63,12 +63,12 @@ public class NISTLanguageTagger {
     
     private boolean create_directory(String dirPath) {
         File dir = new File(dirPath);
+        // attempt to create the directory here
+        boolean successful = dir.mkdir();
         //change permission to 777 for all the users
         dir.setExecutable(true, false);
         dir.setReadable(true, false);
         dir.setWritable(true, false);
-        // attempt to create the directory here
-        boolean successful = dir.mkdir();
         return successful;
     }
 
