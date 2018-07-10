@@ -61,9 +61,11 @@ public class NISTLanguageTagger {
         }
     }
 
-    public void tag_directory(String dirIn, String dirOut, String pathFileOut) throws Exception {
+    public void tag_directory(String dirIn, String dirOut) throws Exception {
         File dir = new File(dirIn);
         File[] listOfFiles = dir.listFiles();
+        
+        String pathFileOut = dirOut + "/report/l-" + this.nistCode + ".tsv";
 
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
@@ -233,7 +235,7 @@ public class NISTLanguageTagger {
 
     public static void main(String[] args) throws Exception {
         NISTLanguageTagger lt = new NISTLanguageTagger(args[0]);
-        lt.tag_directory(args[1], args[2], args[3]);
+        lt.tag_directory(args[1], args[2]);
     }
 
 }
