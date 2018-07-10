@@ -60,16 +60,26 @@ public class NISTLanguageTagger {
                 return "1X";
         }
     }
+    
+    private boolean create_directory(String dirPath) {
+        File dir = new File(dirPath);
+        // attempt to create the directory here
+        boolean successful = dir.mkdir();
+        return successful;
+    }
 
     public void tag_directory(String dirIn, String dirOut) throws Exception {
-        File dir = new File(dirIn);
-        File[] listOfFiles = dir.listFiles();
         
+        if (!create_directory(dirOut + "/report")) {
+            throw new Exception("Couldn't create report directory.");
+        }
         String pathFileOut = dirOut + "/report/l-" + this.nistCode + ".tsv";
-
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
         bw.write(this.nistCode + "\n");
+        
+        File dir = new File(dirIn);
+        File[] listOfFiles = dir.listFiles();
 
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile()) {
