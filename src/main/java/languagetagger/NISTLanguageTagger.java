@@ -70,6 +70,9 @@ public class NISTLanguageTagger {
         dir.setReadable(true, false);
         dir.setWritable(true, false);
         // attempt to create the directory here
+        if (Files.isDirectory(Paths.get(dirPath))) {
+            return true;
+        }
         boolean successful = dir.mkdir();
         return successful;
     }
