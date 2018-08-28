@@ -187,12 +187,18 @@ public class NISTLanguageTagger {
     private HashSet<String> loadAnchors(String primaryLang, String langCode) throws Exception {
         HashSet<String> anchors = new HashSet<String>();
         String anchorsFilename = "weak_anchors/" + primaryLang + "/" + langCode + "_anchors.txt";
-        InputStream is = NISTLanguageTagger.class.getClassLoader().getResourceAsStream(anchorsFilename);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line = "";
-        while ((line = br.readLine()) != null) {
-            anchors.add(line);
+        File f = new File(anchorsFilename);
+        if(f.exists()) { 
+            InputStream is = NISTLanguageTagger.class.getClassLoader().getResourceAsStream(anchorsFilename);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                anchors.add(line);
+            }
         }
+        else {
+            log.info("Couldn't find anchors file " + anchorsFilename);
+        } 
         return anchors;
     }
 
