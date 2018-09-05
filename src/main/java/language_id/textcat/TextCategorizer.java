@@ -18,7 +18,7 @@ import java.util.Map.Entry;
  * categories.
  * 
  */
-public class TextCategorizer extends LanguageClassifier{	
+public class TextCategorizer extends LanguageClassifier {	
 	private final static int UNKNOWN_LIMIT = 1;
 
 	private final String jarConfFile = "languageData/language_fp/textcat.conf";

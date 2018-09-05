@@ -56,8 +56,8 @@ public class NISTLanguageTagger {
                 return "1A";
             case "tgl":
                 return "1B";
-            case "vie":
-                return "1C";
+            case "som":
+                return "1S";
             default:
                 return "1X";
         }
