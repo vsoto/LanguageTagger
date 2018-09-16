@@ -62,7 +62,7 @@ public class NISTLanguageTagger {
                 return "1X";
         }
     }
-    
+
     private boolean create_directory(String dirPath) {
         File dir = new File(dirPath);
         //change permission to 777 for all the users
@@ -78,7 +78,7 @@ public class NISTLanguageTagger {
     }
 
     public void tag_directory(String dirIn, String dirOut) throws Exception {
-        
+
         if (!create_directory(dirOut + "/report")) {
             throw new Exception("Couldn't create report directory.");
         }
@@ -86,7 +86,7 @@ public class NISTLanguageTagger {
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
         bw.write(this.nistCode + "\n");
-        
+
         File dir = new File(dirIn);
         File[] listOfFiles = dir.listFiles();
 
@@ -187,18 +187,16 @@ public class NISTLanguageTagger {
     private HashSet<String> loadAnchors(String primaryLang, String langCode) throws Exception {
         HashSet<String> anchors = new HashSet<String>();
         String anchorsFilename = "weak_anchors/" + primaryLang + "/" + langCode + "_anchors.txt";
-        File f = new File(anchorsFilename);
-        if(f.exists()) { 
-            InputStream is = NISTLanguageTagger.class.getClassLoader().getResourceAsStream(anchorsFilename);
+        InputStream is = NISTLanguageTagger.class.getClassLoader().getResourceAsStream(anchorsFilename);
+        if (is != null) {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line = "";
             while ((line = br.readLine()) != null) {
                 anchors.add(line);
             }
-        }
-        else {
+        } else {
             log.info("Couldn't find anchors file " + anchorsFilename);
-        } 
+        }
         return anchors;
     }
 
