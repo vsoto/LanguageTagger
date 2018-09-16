@@ -70,16 +70,19 @@ public class LanguageDetector {
         if (lp.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = lp.detectLanguage(text);
             results.add(pred);
+            System.err.println("LP: " + pred.languageCode);
         }
         
         if (tc.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = tc.detectLanguage(text);
             results.add(pred);
+            System.err.println("TC: " + pred.languageCode);
         }
         
         if (cld.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = cld.detectLanguage(text);
             results.add(pred);
+            System.err.println("CLD: " + pred.languageCode);
         }
         
 
