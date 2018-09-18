@@ -64,24 +64,28 @@ public class NISTLanguageTagger {
     }
 
     private boolean create_directory(String dirPath) {
-        File dir = new File(dirPath);
-        //change permission to 777 for all the users
-        dir.setExecutable(true, false);
-        dir.setReadable(true, false);
-        dir.setWritable(true, false);
-        // attempt to create the directory here
         if (Files.isDirectory(Paths.get(dirPath))) {
             return true;
         }
+        File dir = new File(dirPath);
         boolean successful = dir.mkdir();
         return successful;
     }
+    
+    private void set_permissions(String dirPath) {
+        //change permission to 777 for all the users
+        File dir = new File(dirPath);
+        dir.setExecutable(true, false);
+        dir.setReadable(true, false);
+        dir.setWritable(true, false);
+    }
 
     public void tag_directory(String dirIn, String dirOut) throws Exception {
-
-        if (!create_directory(dirOut + "/report")) {
+        String reportDirPath = dirOut + "/report"; 
+        if (!create_directory(reportDirPath)) {
             throw new Exception("Couldn't create report directory.");
         }
+        set_permissions(reportDirPath);
         String pathFileOut = dirOut + "/report/l-" + this.nistCode + ".tsv";
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
