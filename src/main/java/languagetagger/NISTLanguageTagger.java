@@ -2,27 +2,22 @@ package main.java.languagetagger;
 
 import main.java.language_id.LanguageDetector;
 import main.java.language_id.Result;
-import main.java.Utils.Utils;
+import main.java.Utils.Triplet;
 
-import com.aliasi.util.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -71,7 +66,7 @@ public class NISTLanguageTagger {
         boolean successful = dir.mkdir();
         return successful;
     }
-    
+
     private void set_permissions(String dirPath) {
         //change permission to 777 for all the users
         File dir = new File(dirPath);
@@ -79,41 +74,59 @@ public class NISTLanguageTagger {
         dir.setReadable(true, false);
         dir.setWritable(true, false);
     }
-
-    public void tag_directory(String dirIn, String dirOut) throws Exception {
-        String reportDirPath = dirOut + "/report"; 
-        if (!create_directory(reportDirPath)) {
-            throw new Exception("Couldn't create report directory.");
-        }
-        set_permissions(reportDirPath);
-        String pathFileOut = dirOut + "/report/l-" + this.nistCode + ".tsv";
+    
+    private void write_report(String pathFileOut, ArrayList<Triplet<String, String, String>> results, boolean evalFlag) throws Exception {
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
         bw.write(this.nistCode + "\n");
 
-        File dir = new File(dirIn);
-        File[] listOfFiles = dir.listFiles();
-
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                String filename = listOfFiles[i].getName();
-                String docId = filename.substring(0, filename.indexOf("."));
-                // if (filename.endsWith(".txt")) {
-                SimpleEntry<String, Double> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
-                String predictedLang = result.getKey();
-                String confidence = String.format("%.5f", result.getValue());
+        for (Triplet<String, String, String> result : results) {
+            String docId = result.getFirst();
+            String predictedLang = result.getSecond();
+            String confidence = result.getThird();
+            if (evalFlag) {
                 if (predictedLang.equals(this.languageCode)) {
                     bw.write(docId + "\t" + confidence + "\n");
                 }
-                // }
+            } else {
+                bw.write(docId + "\t" + confidence + "\n");
             }
         }
-
         bw.close();
         //change permission to 777 for all the users
         fileOut.setExecutable(true, false);
         fileOut.setReadable(true, false);
         fileOut.setWritable(true, false);
+    }
+
+    private void write_output_reports(String dirOut, ArrayList<Triplet<String, String, String>> results) throws Exception {
+        String reportDirPath = dirOut + "/report";
+        if (!create_directory(reportDirPath)) {
+            throw new Exception("Couldn't create report directory.");
+        }
+        set_permissions(reportDirPath);
+        write_report(dirOut + "/report/l-" + this.nistCode + ".tsv", results, true);
+        write_report(dirOut + "/report/results.log", results, false);
+    }
+
+    public void tag_directory(String dirIn, String dirOut) throws Exception {
+        File dir = new File(dirIn);
+        File[] listOfFiles = dir.listFiles();
+
+        ArrayList<Triplet<String, String, String>> results = new ArrayList<>();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                String filename = listOfFiles[i].getName();
+                String docId = filename.substring(0, filename.indexOf("."));
+                SimpleEntry<String, Double> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
+                String predictedLang = result.getKey();
+                String confidence = String.format("%.5f", result.getValue());
+
+                results.add(new Triplet<>(docId, predictedLang, confidence));
+            }
+        }
+        write_output_reports(dirOut, results);
     }
 
     public SimpleEntry<String, Double> tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
@@ -168,26 +181,6 @@ public class NISTLanguageTagger {
         return sentenceJson;
     }
 
-//    private void processTranscriptionFile(String path, String saveTo) throws Exception {
-//        File newLangFile = new File(saveTo);
-//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newLangFile), StandardCharsets.UTF_8));
-//
-//        File contentFile = new File(path);
-//        BufferedReader br = new BufferedReader(new FileReader(contentFile));
-//
-//        String line;
-//
-//        while ((line = br.readLine()) != null) {
-//            if (line.startsWith("[")) {
-//                bw.write(line + "\n");
-//            } else {
-//                String outputBlock = outputTranscriptionLine(line);
-//                bw.write(outputBlock);
-//            }
-//        }
-//        br.close();
-//        bw.close();
-//    }
     private HashSet<String> loadAnchors(String primaryLang, String langCode) throws Exception {
         HashSet<String> anchors = new HashSet<String>();
         String anchorsFilename = "weak_anchors/" + primaryLang + "/" + langCode + "_anchors.txt";
@@ -212,33 +205,6 @@ public class NISTLanguageTagger {
         return doc;
     }
 
-//    private String outputHeaderDoc(String doc) {
-//        Result res = lp.detectLanguage(doc, this.languageCode);
-//        String output = "<doc " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
-//        return output;
-//    }
-//    private static String outputEndDoc() {
-//        return "</doc>\n";
-//    }
-//    private String outputTranscriptionLine(String line) {
-//        Pattern pattern = Pattern.compile("[0-9]*\\.?[0-9]+");
-//        String output;
-//        if (line.contains("inLine") || line.contains("outLine")) {
-//            int idx = line.indexOf("Line");
-//            String prefix = line.substring(0, idx + 4);
-//            String text = line.substring(idx + 4);
-//            String untagged_text = text.replaceAll("<.*>", "");
-//            Result res = lp.detectLanguage(untagged_text, this.languageCode);
-//            output = prefix + " <s> " + processLine(text) + " </s " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
-//        } else if (line.matches("[0-9]*\\.?[0-9]+.*")) {
-//            output = line + "\n";
-//        } else {
-//            String untagged_text = line.replaceAll("<.*>", "");
-//            Result res = lp.detectLanguage(untagged_text, this.languageCode);
-//            output = "<s> " + processLine(line) + " </s " + (makeAttribute("engine", res.engine) + makeAttribute("languageCode", res.languageCode) + makeAttribute("score", String.valueOf(res.confidence))) + " > \n";
-//        }
-//        return output;
-//    }
     private JsonArray processLine(String line) {
         String[] tokens = line.split(" ");
         JsonArray lineJson = new JsonArray();
@@ -254,10 +220,6 @@ public class NISTLanguageTagger {
             lineJson.add(tokenJson);
         }
         return lineJson;
-    }
-
-    private static String makeAttribute(String att, String value) {
-        return att + "=\"" + value + "\" ";
     }
 
     public static void main(String[] args) throws Exception {
