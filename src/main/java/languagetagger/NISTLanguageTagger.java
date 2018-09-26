@@ -74,7 +74,7 @@ public class NISTLanguageTagger {
         dir.setReadable(true, false);
         dir.setWritable(true, false);
     }
-    
+
     private void write_report(String pathFileOut, ArrayList<Triplet<String, String, String>> results, boolean evalFlag) throws Exception {
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
@@ -89,7 +89,7 @@ public class NISTLanguageTagger {
                     bw.write(docId + "\t" + confidence + "\n");
                 }
             } else {
-                bw.write(docId + "\t" + confidence + "\n");
+                bw.write(docId + "\t" + predictedLang + "\t" + confidence + "\n");
             }
         }
         bw.close();
