@@ -81,8 +81,8 @@ public class LanguageDetector {
         
         if (cld.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = cld.detectLanguage(text, target_code.getLanguageCode());
-            System.err.println("CLD");
-            System.err.println(pred);
+            // System.err.println("CLD");
+            // System.err.println(pred);
             results.add(pred);
         }
         
