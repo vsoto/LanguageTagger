@@ -171,7 +171,8 @@ public class FingerPrint extends Hashtable<String, Integer> {
                 this.category = fp.getCategory();
             }
         }
-        this.confidence = (sumDistances - minDistance) * 1.0 / sumDistances;
+        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
+        // this.confidence = (sumDistances - minDistance) * 1.0 / sumDistances;
         return this.getCategoryDistances();
     }
     
@@ -191,10 +192,16 @@ public class FingerPrint extends Hashtable<String, Integer> {
                 targetDistance = distance;
             }
         }
-        this.confidence = (sumDistances - minDistance) * 1.0 / sumDistances;
-        this.targetLangConf = (sumDistances - targetDistance) * 1.0 / sumDistances;
+        // this.confidence = (sumDistances - minDistance) * 1.0 / sumDistances;
+        // this.targetLangConf = (sumDistances - targetDistance) * 1.0 / sumDistances;
+        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
+        this.targetLangConf = computeConfidence(targetDistance, sumDistances, categories.size());
         System.out.println(minDistance + "\t" + targetDistance);
         return this.getCategoryDistances();
+    }
+    
+    private double computeConfidence(int distance, long sumDistances, int size) {
+        return ((size+1) * 1.0 / size)  - (distance * 1.0 / sumDistances);
     }
 
     public Map<String, Integer> getCategoryDistances() {
