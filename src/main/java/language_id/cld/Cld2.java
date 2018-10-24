@@ -68,7 +68,6 @@ public class Cld2 extends LanguageClassifier {
                  break;
                 
         }
-        System.err.println(targetLangCode + "\t" + cld2Code);
         return cld2Code;
     }
 
