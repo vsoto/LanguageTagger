@@ -69,16 +69,22 @@ public class LanguageDetector {
 
         if (lp.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = lp.detectLanguage(text, target_code.getLanguageCode());
+            System.err.println("LP");
+            System.err.println(pred);
             results.add(pred);
         }
         
         if (tc.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
+            System.err.println("TC");
             Result pred = tc.detectLanguage(text, target_code.getLanguageCode());
+            System.err.println(pred);
             results.add(pred);
         }
         
         if (cld.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = cld.detectLanguage(text, target_code.getLanguageCode());
+            System.err.println("CLD");
+            System.err.println(pred);
             results.add(pred);
         }
         
