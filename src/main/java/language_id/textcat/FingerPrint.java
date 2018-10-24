@@ -159,30 +159,31 @@ public class FingerPrint extends Hashtable<String, Integer> {
      *
      * @param categories
      */
-    public Map<String, Integer> categorize(Collection<FingerPrint> categories) {
-        int minDistance = Integer.MAX_VALUE;
-        long sumDistances = 0L;
-        for (FingerPrint fp : categories) {
-            int distance = this.getDistance(fp);
-            sumDistances += distance;
-            this.getCategoryDistances().put(fp.getCategory(), distance);
-            if (distance < minDistance) {
-                minDistance = distance;
-                this.category = fp.getCategory();
-            }
-        }
-        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
-        // this.confidence = (sumDistances - minDistance) * 1.0 / sumDistances;
-        return this.getCategoryDistances();
-    }
+//    public Map<String, Integer> categorize(Collection<FingerPrint> categories) {
+//        int minDistance = Integer.MAX_VALUE;
+//        long sumDistances = 0L;
+//        for (FingerPrint fp : categories) {
+//            int distance = this.getDistance(fp);
+//            sumDistances += distance;
+//            this.getCategoryDistances().put(fp.getCategory(), distance);
+//            if (distance < minDistance) {
+//                minDistance = distance;
+//                this.category = fp.getCategory();
+//            }
+//        }
+//        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
+//        return this.getCategoryDistances();
+//    }
     
     public Map<String, Integer> categorize(Collection<FingerPrint> categories, String targetLangCode) {
         int minDistance = Integer.MAX_VALUE;
         int targetDistance = Integer.MAX_VALUE;
-        long sumDistances = 0L;
+        int maxDistance = 0;
         for (FingerPrint fp : categories) {
             int distance = this.getDistance(fp);
-            sumDistances += distance;
+            if (distance > maxDistance) {
+                maxDistance = distance;
+            }
             this.getCategoryDistances().put(fp.getCategory(), distance);
             if (distance < minDistance) {
                 minDistance = distance;
@@ -192,16 +193,14 @@ public class FingerPrint extends Hashtable<String, Integer> {
                 targetDistance = distance;
             }
         }
-        // this.confidence = (sumDistances - minDistance) * 1.0 / sumDistances;
-        // this.targetLangConf = (sumDistances - targetDistance) * 1.0 / sumDistances;
-        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
-        this.targetLangConf = computeConfidence(targetDistance, sumDistances, categories.size());
+        this.confidence = computeConfidence(minDistance, maxDistance, categories.size());
+        this.targetLangConf = computeConfidence(targetDistance, maxDistance, categories.size());
         return this.getCategoryDistances();
     }
     
-    private double computeConfidence(int distance, long sumDistances, int size) {
-        System.out.println(distance + "\t" + sumDistances + "\t" + size);
-        return (sumDistances - distance) * (1.0 / (size - 1)) / sumDistances;
+    private double computeConfidence(int distance, int maxDistance, int size) {
+        System.out.println(distance + "\t" + maxDistance + "\t" + size);
+        return (maxDistance - distance) * 1.0 / maxDistance;
     }
 
     public Map<String, Integer> getCategoryDistances() {
