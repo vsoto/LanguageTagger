@@ -143,7 +143,7 @@ public class NISTLanguageTagger {
         return new Triple<>(predictedLang, predLangConf, targetConf);
     }
 
-    public JsonObject tag_document_string(String document, String pathFileOut) throws Exception {
+    public Result tag_document_string(String document, String pathFileOut) throws Exception {
         String[] lines = document.split("\n");
 
         String text = "";
@@ -176,7 +176,7 @@ public class NISTLanguageTagger {
         fileOut.setReadable(true, false);
         fileOut.setWritable(true, false);
         
-        return jsonDoc;
+        return docResult;
     }
 
     public JsonObject tag_line(String line) {
