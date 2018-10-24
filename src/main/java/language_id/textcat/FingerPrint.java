@@ -200,7 +200,7 @@ public class FingerPrint extends Hashtable<String, Integer> {
     }
     
     private double computeConfidence(int distance, long sumDistances, int size) {
-        System.out.println(distance + '\t' + sumDistances + '\t' + size);
+        System.out.println(distance + "\t" + sumDistances + "\t" + size);
         return (sumDistances - distance) * (1.0 / (size - 1)) / sumDistances;
     }
 
