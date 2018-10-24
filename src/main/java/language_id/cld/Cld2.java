@@ -83,9 +83,9 @@ public class Cld2 extends LanguageClassifier {
                 textBytes,
                 isReliable);
         
-        System.err.println(language3[0] + '\t' + language3[1] + '\t' + language3[2]);
-        System.err.println(percent3[0] + '\t' + percent3[1] + '\t' + percent3[2]);
-        System.err.println(normalizedScore3[0] + '\t' + normalizedScore3[1] + '\t' + normalizedScore3[2]);
+        System.err.println(language3[0] + "\t" + language3[1] + "\t" + language3[2]);
+        System.err.println(percent3[0] + "\t" + percent3[1] + "\t" + percent3[2]);
+        System.err.println(normalizedScore3[0] + "\t" + normalizedScore3[1] + "\t" + normalizedScore3[2]);
 
         LanguageCode lc = new LanguageCode(getLanguageCode(language), LanguageCode.CodeTypes.ISO_639_1);
         String predLangCode= lc.getLanguageCode();
