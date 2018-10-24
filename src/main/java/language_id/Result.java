@@ -46,6 +46,7 @@ public class Result {
                 "languageCode='" + this.predLangCode + '\'' +
                 ", isReliable=" + this.isReliable +
                 ", confidence=" + this.predLangConf +
+                ", targetLangConf=" + this.targetLangConf +
 		", engine=" + this.engine +
                 '}';
     }
