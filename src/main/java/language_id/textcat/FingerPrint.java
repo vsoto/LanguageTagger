@@ -159,21 +159,21 @@ public class FingerPrint extends Hashtable<String, Integer> {
      *
      * @param categories
      */
-//    public Map<String, Integer> categorize(Collection<FingerPrint> categories) {
-//        int minDistance = Integer.MAX_VALUE;
-//        long sumDistances = 0L;
-//        for (FingerPrint fp : categories) {
-//            int distance = this.getDistance(fp);
-//            sumDistances += distance;
-//            this.getCategoryDistances().put(fp.getCategory(), distance);
-//            if (distance < minDistance) {
-//                minDistance = distance;
-//                this.category = fp.getCategory();
-//            }
-//        }
-//        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
-//        return this.getCategoryDistances();
-//    }
+    public Map<String, Integer> categorize(Collection<FingerPrint> categories) {
+        int minDistance = Integer.MAX_VALUE;
+        long sumDistances = 0L;
+        for (FingerPrint fp : categories) {
+            int distance = this.getDistance(fp);
+            sumDistances += distance;
+            this.getCategoryDistances().put(fp.getCategory(), distance);
+            if (distance < minDistance) {
+                minDistance = distance;
+                this.category = fp.getCategory();
+            }
+        }
+        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
+        return this.getCategoryDistances();
+    }
     
     public Map<String, Integer> categorize(Collection<FingerPrint> categories, String targetLangCode) {
         int minDistance = Integer.MAX_VALUE;
@@ -198,7 +198,7 @@ public class FingerPrint extends Hashtable<String, Integer> {
         return this.getCategoryDistances();
     }
     
-    private double computeConfidence(int distance, int maxDistance, int size) {
+    private double computeConfidence(int distance, long maxDistance, int size) {
         System.out.println(distance + "\t" + maxDistance + "\t" + size);
         return (maxDistance - distance) * 1.0 / maxDistance;
     }
