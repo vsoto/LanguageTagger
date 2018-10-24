@@ -37,14 +37,14 @@ public class TextCategorizer extends LanguageClassifier {
         }
         FingerPrint fp = new FingerPrint();
         fp.create(text);
-        fp.categorize(categories);
+        fp.categorize(categories, targetLangCode);
         String predLangCode = fp.getCategory();
         if (predLangCode != null && predLangCode.equals("swh")) {
             predLangCode = "swa";
         }
         double predLangConf = fp.getConfidence();
         double targetLangConf = 0.0;
-        if (predLangCode.equals(targetLangCode)) {
+        if (targetLangCode.equals(predLangCode)) {
             targetLangConf = predLangConf;
         } else {
             targetLangConf = fp.getTargetLangConfidence();
