@@ -10,7 +10,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.apache.log4j.Logger;
-import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -132,7 +131,7 @@ public class NISTLanguageTagger {
         write_output_reports(dirOut, results);
     }
 
-    public Triple<String, Double, Double> verify_document_language(String pathFileIn, String pathFileOut) throws Exception {
+    public Triplet<String, Double, Double> verify_document_language(String pathFileIn, String pathFileOut) throws Exception {
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
         
@@ -140,7 +139,7 @@ public class NISTLanguageTagger {
         String predictedLang = docResult.predLangCode;
         Double predLangConf = docResult.predLangConf;
         Double targetConf = docResult.targetLangConf;
-        return new Triple<>(predictedLang, predLangConf, targetConf);
+        return new Triplet<>(predictedLang, predLangConf, targetConf);
     }
 
     public Result tag_document_string(String document, String pathFileOut) throws Exception {
