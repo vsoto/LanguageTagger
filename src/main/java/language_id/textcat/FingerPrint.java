@@ -161,17 +161,19 @@ public class FingerPrint extends Hashtable<String, Integer> {
      */
     public Map<String, Integer> categorize(Collection<FingerPrint> categories) {
         int minDistance = Integer.MAX_VALUE;
-        long sumDistances = 0L;
+        int maxDistance = 0;
         for (FingerPrint fp : categories) {
             int distance = this.getDistance(fp);
-            sumDistances += distance;
+            if (distance > maxDistance) {
+                maxDistance = distance;
+            }
             this.getCategoryDistances().put(fp.getCategory(), distance);
             if (distance < minDistance) {
                 minDistance = distance;
                 this.category = fp.getCategory();
             }
         }
-        this.confidence = computeConfidence(minDistance, sumDistances, categories.size());
+        this.confidence = computeConfidence(minDistance, maxDistance, categories.size());
         return this.getCategoryDistances();
     }
     
@@ -198,8 +200,9 @@ public class FingerPrint extends Hashtable<String, Integer> {
         return this.getCategoryDistances();
     }
     
-    private double computeConfidence(int distance, long maxDistance, int size) {
-        System.out.println(distance + "\t" + maxDistance + "\t" + size);
+    // This is a confidence score and not a probability. Sum of confidence
+    // scores as computed here do not sum up to 1. They are bound to [0, 1]
+    private double computeConfidence(int distance, int maxDistance, int size) {
         return (maxDistance - distance) * 1.0 / maxDistance;
     }
 

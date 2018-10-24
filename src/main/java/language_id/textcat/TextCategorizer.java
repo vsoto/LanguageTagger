@@ -151,37 +151,4 @@ public class TextCategorizer extends LanguageClassifier {
         return fp.getCategoryDistances();
     }
 
-//	/**
-//	 * reads from stdin til EOF is read. prints the determined category of the
-//	 * input and terminates afterwards.
-//	 *
-//	 * @param args
-//	 */
-//	public static void main(String[] args) {
-//		byte[] data = new byte[1024];
-//		int read;
-//		String s = "";
-//		if (args.length == 0 || args[0].equals("-categorize")) {
-//			try {
-//				while ((read = System.in.read(data)) != (-1)) {
-//					s += new String(data, 0, read);
-//				}
-//			} catch (IOException ioe) {
-//				ioe.printStackTrace();
-//			}
-//			TextCategorizer guesser = new TextCategorizer();
-//			System.out.println(guesser.categorize(s));
-//		} else if(args.length > 1 && args[0].equals("-createfp")) {
-//			FingerPrint fp = new FingerPrint();
-//			fp.create(new File(args[1]));
-//			if(args.length > 2) {
-//				fp.setCategory(args[2]);
-//			} else {
-//				fp.setCategory(args[1].replaceAll("\\..*",""));
-//			}
-//			fp.save();
-//		} else {
-//			System.out.println("Options:\n\n\t-categorize\tdetermines languageCode of stdin\n\t-createfp <file> <category>\tcreates fingerprint from file");
-//		}
-//	}
 }

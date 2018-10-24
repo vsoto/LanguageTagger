@@ -72,6 +72,8 @@ public class CLDLanguaeDetectorPyWrapper {
 
         // read return value
         // lang: %s ,reliable: isRealiable@' % detectedLangName)
+        System.err.println("Looking at CLD output:");
+        System.err.println(ret);
         lang = ret.substring(8, ret.indexOf(',') - 1);
         String temp = ret.substring(ret.indexOf("reliable:") + "reliable:".length() + 1, ret.length());
         int scoreInt = Integer.parseInt(temp.substring(0, 1));
