@@ -58,9 +58,9 @@ public class Cld2 extends LanguageClassifier {
                 Language.UNKNOWN_LANGUAGE);
 
         int flags = 0;
-        int[] language3 = new int[3];
-        int[] percent3 = new int[3];
-        double[] normalizedScore3 = new double[3];
+        int[] language3 = new int[10];
+        int[] percent3 = new int[10];
+        double[] normalizedScore3 = new double[10];
         int[] textBytes = new int[1];
         boolean[] isReliable = new boolean[1];
         byte[] utf8EncodedText;
