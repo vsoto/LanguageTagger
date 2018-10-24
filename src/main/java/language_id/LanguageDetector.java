@@ -75,9 +75,7 @@ public class LanguageDetector {
         }
         
         if (tc.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            System.err.println("TC");
             Result pred = tc.detectLanguage(text, target_code.getLanguageCode());
-            System.err.println(pred);
             results.add(pred);
         }
         
