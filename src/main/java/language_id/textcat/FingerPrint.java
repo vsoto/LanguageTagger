@@ -193,6 +193,7 @@ public class FingerPrint extends Hashtable<String, Integer> {
         }
         this.confidence = (sumDistances - minDistance) * 1.0 / sumDistances;
         this.targetLangConf = (sumDistances - targetDistance) * 1.0 / sumDistances;
+        System.out.println(minDistance + "\t" + targetDistance);
         return this.getCategoryDistances();
     }
 
