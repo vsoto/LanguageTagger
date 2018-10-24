@@ -10,23 +10,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 
-
 /**
- * This class is used to detect in which languageCode a text is.
- * It's a wrapper for a python script based on Google's compact languageCode detector.
+ * This class is used to detect in which languageCode a text is. It's a wrapper
+ * for a python script based on Google's compact languageCode detector.
  *
  */
 public class CLDLanguaeDetectorPyWrapper {
-    /** name of the python script file*/
+
+    /**
+     * name of the python script file
+     */
     public static String detectScript = "langDetect_nltk.py";
-    /** a temp text file to store the string */
+    /**
+     * a temp text file to store the string
+     */
     public static String tempFile = "tempFile.txt";
 
     static Logger log = Logger.getLogger(CLDLanguaeDetectorPyWrapper.class);
 
-
     /**
      * Detects the languageCode of a string
+     *
      * @param text String to detect
      * @return a Result object with languageCode and reliability
      * @throws Exception If can't find the python script
@@ -34,13 +38,12 @@ public class CLDLanguaeDetectorPyWrapper {
     public static Result detect(final String text) throws Exception {
 
         String path = CLDLanguaeDetectorPyWrapper.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String decodedPath = URLDecoder.decode(path, "UTF-8").replace("Babel.jar!/main/main.jar","").replace("file:","");
+        String decodedPath = URLDecoder.decode(path, "UTF-8").replace("Babel.jar!/main/main.jar", "").replace("file:", "");
 
-        File script = new File(decodedPath+detectScript);
-        if(!script.exists()){
-            throw new Exception("Cannot find langDetect.py at: "+decodedPath+detectScript);
+        File script = new File(decodedPath + detectScript);
+        if (!script.exists()) {
+            throw new Exception("Cannot find langDetect.py at: " + decodedPath + detectScript);
         }
-
 
         String lang;
         boolean isReliable;
@@ -54,7 +57,7 @@ public class CLDLanguaeDetectorPyWrapper {
         }
 
         //pass to python
-        ProcessBuilder pb = new ProcessBuilder("python", decodedPath+detectScript, tempFile);
+        ProcessBuilder pb = new ProcessBuilder("python", decodedPath + detectScript, tempFile);
         Process p = null;
         String ret = null;
 
@@ -63,42 +66,38 @@ public class CLDLanguaeDetectorPyWrapper {
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             ret = in.readLine();
 
-
         } catch (IOException e) {
             log.error(e);
         }
 
-        //read return value
+        // read return value
         // lang: %s ,reliable: isRealiable@' % detectedLangName)
-        lang = ret.substring(8, ret.indexOf(',')-1);
+        lang = ret.substring(8, ret.indexOf(',') - 1);
         String temp = ret.substring(ret.indexOf("reliable:") + "reliable:".length() + 1, ret.length());
         int scoreInt = Integer.parseInt(temp.substring(0, 1));
 
-        String [] split = null;
+        String[] split = null;
 
         try {
             split = ret.substring(ret.indexOf("[("), ret.length()).split(",");
-        }
-        catch (Exception x){
-            Result rest = new Result(lang, true, 100, "cld2");
+        } catch (Exception x) {
+            Result rest = new Result(lang, true, 100, 100, "cld2");
             log.info(rest);
             tempFileHandler.delete();
             return rest;
 
         }
 
-        double score = Double.parseDouble(split[3].replaceAll("\\)","").replaceAll("\\]",""));
-        if(scoreInt == 1)
+        double score = Double.parseDouble(split[3].replaceAll("\\)", "").replaceAll("\\]", ""));
+        if (scoreInt == 1) {
             isReliable = true;
-        else
+        } else {
             isReliable = false;
-
-        Result rest = new Result(lang, isReliable,score, "cld2");
-
+        }
+        Result rest = new Result(lang, isReliable, score, score, "cld2");
 
         //delete file
         tempFileHandler.delete();
-
 
         return rest;
 

@@ -22,7 +22,7 @@ public abstract class DetectLanguage {
         if (results.isEmpty())
             return null;
         else
-            return results.get(0).languageCode;
+            return results.get(0).predLangCode;
     }
 
     public static List<Result> detect(final String text) throws APIError {
