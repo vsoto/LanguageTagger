@@ -122,9 +122,6 @@ public class Cld2 extends LanguageClassifier {
             String lang1 = lc1.getLanguageCode();
             String lang2 = lc2.getLanguageCode();
             
-            System.err.println(language3[1] + "\t" + percent3[1] / 100.0);
-            System.err.println(language3[2] + "\t" + percent3[2] / 100.0);
-            
             if (targetLangCode.equals(lang1)) {
                 targetLangConf = percent3[1] / 100.0;
             } else if (targetLangCode.equals(lang2)) {

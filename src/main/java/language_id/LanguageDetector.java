@@ -173,6 +173,7 @@ public class LanguageDetector {
         Map<String, Double> map_conf = new HashMap<>();
         Result maxScoring = null;
         double max_confidence_score = -10.0;
+        double avg_target_conf = 0.0;
         for (Result t : list) {
             Integer val = map_count.get(t);
             map_count.put(t, val == null ? 1 : val + 1);
@@ -182,8 +183,9 @@ public class LanguageDetector {
                 max_confidence_score = t.predLangConf;
                 maxScoring = t;
             }
+            avg_target_conf += t.targetLangConf;
         }
-        
+        avg_target_conf /= list.size();
         // If sizes are the same it means that all the values in list are unique
         if (map_count.size() == list.size()) {  
             return maxScoring;
@@ -199,6 +201,7 @@ public class LanguageDetector {
         Result maj_vote = max.getKey();
 
         double average_confidence = map_conf.get(maj_vote.predLangCode) / max.getValue();
+        
         //int count = max.getValue(); 
         //for (Result t: list) {
         //   if (t.languageCode.equals(maj_vote.languageCode)){
@@ -209,6 +212,7 @@ public class LanguageDetector {
 
         maj_vote.engine = "maj_vote";
         maj_vote.predLangConf = average_confidence;
+        maj_vote.targetLangConf = avg_target_conf;
         return maj_vote;
     }
 }
