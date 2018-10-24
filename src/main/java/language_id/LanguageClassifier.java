@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public abstract class LanguageClassifier {
 
     public ArrayList<LanguageCode> supportedLanguages = new ArrayList<>();
-    abstract public Result detectLanguage(String text) throws  IOException, ClassNotFoundException;
+    abstract public Result detectLanguage(String text, String targetLangCode) throws  IOException, ClassNotFoundException;
 
     /**
      * Generates a list of support languages by this classifier

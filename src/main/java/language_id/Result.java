@@ -5,43 +5,47 @@ package main.java.language_id;
  */
 public class Result {
 
-    public Result(String languageCode, boolean isReliable, double confidence) {
+    public Result(String predLangCode, boolean isReliable, double predLangConf,
+            double targetLangConf ) {
 
-        if(languageCode == null){
-            this.languageCode = "UNKNOWN";
-            isReliable = false;
-            confidence = 0;
+        if(predLangCode == null){
+            this.predLangCode = "UNKNOWN";
+            this.isReliable = false;
+            this.predLangConf = 0;
         }
         else {
-            this.languageCode = languageCode;
+            this.predLangCode = predLangCode;
             this.isReliable = isReliable;
-            this.confidence = confidence;
+            this.predLangConf = predLangConf;
         }
+        this.targetLangConf = targetLangConf;
     }
 
-    public Result(String languageCode, boolean isReliable, double confidence, String engine) {
-	this(languageCode, isReliable, confidence);
+    public Result(String predLangCode, boolean isReliable, double predLangConf,
+            double targetLangConf, String engine) {
+	this(predLangCode, isReliable, predLangConf, targetLangConf);
 	if (engine == null) {
 	   engine = "UNKNOWN";
 	}
 	this.engine = engine;
     }
 
-    public String languageCode;
+    public String predLangCode;
     public String engine;
     public boolean isReliable;
-    public double confidence;
+    public double predLangConf;
+    public double targetLangConf;
 
     public String getLanguageName(){
-        return com.neovisionaries.i18n.LanguageAlpha3Code.getByCode(this.languageCode).getName();
+        return com.neovisionaries.i18n.LanguageAlpha3Code.getByCode(this.predLangCode).getName();
     }
 
     @Override
     public String toString() {
         return "Result{" +
-                "languageCode='" + this.languageCode + '\'' +
+                "languageCode='" + this.predLangCode + '\'' +
                 ", isReliable=" + this.isReliable +
-                ", confidence=" + this.confidence +
+                ", confidence=" + this.predLangConf +
 		", engine=" + this.engine +
                 '}';
     }
@@ -53,13 +57,11 @@ public class Result {
         if (!(o instanceof Result)) return false;
 
         Result result = (Result) o;
-
-        return languageCode.equals(result.languageCode);
-
+        return predLangCode.equals(result.predLangCode);
     }
 
     @Override
     public int hashCode() {
-        return languageCode.hashCode();
+        return predLangCode.hashCode();
     }
 }

@@ -58,27 +58,27 @@ public class LanguageDetector {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public Result detectMajorityVote(String text, String lang) throws IOException, ClassNotFoundException {
+    public Result detectMajorityVote(String text, String target_lang) throws IOException, ClassNotFoundException {
 
         if (cld == null) { //if we can't load CLD no point in doing majority vote
-            return detectLanguage(text, lang);
+            return detectLanguage(text, target_lang);
         }
         
         ArrayList<Result> results = new ArrayList<>();
-        LanguageCode code = new LanguageCode(lang, LanguageCode.CodeTypes.ISO_639_2);
+        LanguageCode target_code = new LanguageCode(target_lang, LanguageCode.CodeTypes.ISO_639_2);
 
-        if (lp.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            Result pred = lp.detectLanguage(text);
+        if (lp.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
+            Result pred = lp.detectLanguage(text, target_code.getLanguageCode());
             results.add(pred);
         }
         
-        if (tc.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            Result pred = tc.detectLanguage(text);
+        if (tc.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
+            Result pred = tc.detectLanguage(text, target_code.getLanguageCode());
             results.add(pred);
         }
         
-        if (cld.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            Result pred = cld.detectLanguage(text);
+        if (cld.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
+            Result pred = cld.detectLanguage(text, target_code.getLanguageCode());
             results.add(pred);
         }
         

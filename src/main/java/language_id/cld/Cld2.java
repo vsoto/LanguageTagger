@@ -26,7 +26,7 @@ import java.io.IOException;
 public class Cld2 extends LanguageClassifier {
 
     public Cld2() throws IOException, ClassNotFoundException {
-        this.detectLanguage("test that will throw an error if fails to load cld");
+        this.detectLanguage("test that will throw an error if fails to load cld", "en");
         String[] listOfLangs = {"Afrikaans", "Albanian", "Arabic", "Armenian", "Azerbaijani", "Basque", "Belarusian", "Bengali", "Bihari languages", "Bulgarian", "Catalan", "Cebuano", "Cherokee", "Croatian", "Czech", "Chinese", "Danish", "Dhivehi", "Dutch", "English", "Estonian", "Finnish", "French", "Galician", "Ganda", "Georgian", "German", "Modern Greek", "Gujarati", "Haitian", "Hebrew", "Hindi", "Hmong", "Hungarian", "Icelandic", "Indonesian", "Inuktitut", "Irish", "Italian", "Javanese", "Japanese", "Kannada", "Central Khmer", "Kinyarwanda", "Korean", "Lao", "Latvian", "Lithuanian", "Macedonian", "Malay", "Malayalam", "Maltese", "Marathi", "Nepali", "Norwegian", "Oriya", "Persian", "Polish", "Portuguese", "Panjabi", "Romanian", "Russian", "Scottish Gaelic", "Serbian", "Sinhala", "Slovak", "Slovene", "Somali", "Spanish", "Swahili", "Swedish", "Syriac", "Tagalog", "Tamil", "Telugu", "Thai", "Turkish", "Ukrainian", "Urdu", "Vietnamese", "Welsh", "Yiddish"};
         buildListOfSupportedLanguageCodesFromLanguageNames(listOfLangs);
 
@@ -48,7 +48,7 @@ public class Cld2 extends LanguageClassifier {
         return Cld2Library.INSTANCE._ZN4CLD221DetectLanguageVersionEv();
     }
 
-    public static Result detect(String text) throws IOException, ClassNotFoundException {
+    public static Result detect(String text, String targetLangCode) throws IOException, ClassNotFoundException {
         boolean isPlainText = true;
 
         CLDHints cldHints = new CLDHints(
@@ -67,7 +67,7 @@ public class Cld2 extends LanguageClassifier {
         try {
             utf8EncodedText = text.getBytes("UTF-8");
         } catch (java.io.UnsupportedEncodingException exc) {
-            return new Result(null, false, 0, "cld2");
+            return new Result(null, false, 0.0, 0.0, "cld2");
 
         }
         int language = Cld2Library.INSTANCE._ZN4CLD224ExtDetectLanguageSummaryEPKcibPKNS_8CLDHintsEiPNS_8LanguageEPiPdPSt6vectorINS_11ResultChunkESaISA_EES7_Pb(
@@ -84,16 +84,23 @@ public class Cld2 extends LanguageClassifier {
                 isReliable);
 
         LanguageCode lc = new LanguageCode(getLanguageCode(language), LanguageCode.CodeTypes.ISO_639_1);
-        String bestLang = lc.getLanguageCode();
-        if (bestLang != null && bestLang.equals("swh")) {
-            bestLang = "swa";
+        String predLangCode= lc.getLanguageCode();
+        if (predLangCode != null && predLangCode.equals("swh")) {
+            predLangCode = "swa";
         }
-        return new Result(bestLang, isReliable[0], percent3[0] / 100.0, "cld2");
+        double predLangConf = percent3[0] / 100.0;
+        double targetLangConf = 0.0;
+        if (predLangCode.equals(targetLangCode)) {
+            targetLangConf = predLangConf;
+        } else {
+            targetLangConf = 0.0;
+        }
+        return new Result(predLangCode, isReliable[0], predLangConf, targetLangConf, "cld2");
 
     }
 
     @Override
-    public Result detectLanguage(String text) throws IOException, ClassNotFoundException {
-        return Cld2.detect(text);
+    public Result detectLanguage(String text, String targetLangCode) throws IOException, ClassNotFoundException {
+        return Cld2.detect(text, targetLangCode);
     }
 }

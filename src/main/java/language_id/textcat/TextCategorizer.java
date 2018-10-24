@@ -31,18 +31,26 @@ public class TextCategorizer extends LanguageClassifier {
     }
 
     @Override
-    public Result detectLanguage(String text) throws IOException, ClassNotFoundException {
+    public Result detectLanguage(String text, String targetLangCode) throws IOException, ClassNotFoundException {
         if (text.length() < UNKNOWN_LIMIT) {
-            return new Result("unknown", true, 0.0);
+            return new Result("unknown", true, 0.0, 0.0, "textcat");
         }
         FingerPrint fp = new FingerPrint();
         fp.create(text);
         fp.categorize(categories);
-        String bestLang = fp.getCategory();
-        if (bestLang != null && bestLang.equals("swh")) {
-            bestLang = "swa";
+        String predLangCode = fp.getCategory();
+        if (predLangCode != null && predLangCode.equals("swh")) {
+            predLangCode = "swa";
         }
-        return new Result(bestLang, true, fp.getConfidence(), "textcat");
+        double predLangConf = fp.getConfidence();
+        double targetLangConf = 0.0;
+        if (predLangCode.equals(targetLangCode)) {
+            targetLangConf = predLangConf;
+        } else {
+            targetLangConf = fp.getTargetLangConfidence();
+        }
+        
+        return new Result(predLangCode, true, predLangConf, targetLangConf, "textcat");
     }
 
     /**
