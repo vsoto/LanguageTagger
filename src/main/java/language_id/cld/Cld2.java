@@ -47,6 +47,29 @@ public class Cld2 extends LanguageClassifier {
     public static String version() {
         return Cld2Library.INSTANCE._ZN4CLD221DetectLanguageVersionEv();
     }
+    
+    private static int translateLangCode2CLD2(String targetLangCode) {
+        int cld2Code = 0;
+        switch (targetLangCode) {
+            case "eng":
+                 cld2Code = Language.ENGLISH;
+                 break;
+            case "tgl":
+                 cld2Code = Language.TAGALOG;
+                 break;
+            case "swa":
+                 cld2Code = Language.SWAHILI;
+                 break;
+            case "som":
+                 cld2Code = Language.SOMALI;
+                 break;
+            default:
+                 cld2Code = Language.UNKNOWN_LANGUAGE;
+                 break;
+                
+        }
+        return cld2Code;
+    }
 
     public static Result detect(String text, String targetLangCode) throws IOException, ClassNotFoundException {
         boolean isPlainText = true;
@@ -55,7 +78,8 @@ public class Cld2 extends LanguageClassifier {
                 null,
                 "",
                 Encoding.UNKNOWN_ENCODING,
-                Language.UNKNOWN_LANGUAGE);
+                translateLangCode2CLD2(targetLangCode));
+                // Language.UNKNOWN_LANGUAGE);
 
         int flags = 0;
         int[] language3 = new int[10];
