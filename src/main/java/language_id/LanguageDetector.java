@@ -188,6 +188,7 @@ public class LanguageDetector {
         avg_target_conf /= list.size();
         // If sizes are the same it means that all the values in list are unique
         if (map_count.size() == list.size()) {  
+            maxScoring.targetLangConf = avg_target_conf;
             return maxScoring;
         }
 
