@@ -176,8 +176,8 @@ public class NISTLanguageTagger {
         sentenceJson.add("items", tokensJson);
         Result res = lp.detectLanguage(line, this.languageCode);
         sentenceJson.addProperty("engine", res.engine);
-        sentenceJson.addProperty("languageCode", res.languageCode);
-        sentenceJson.addProperty("score", res.confidence);
+        sentenceJson.addProperty("languageCode", res.predLangCode);
+        sentenceJson.addProperty("score", res.predLangConf);
         return sentenceJson;
     }
 
@@ -200,8 +200,8 @@ public class NISTLanguageTagger {
     private JsonObject outputHeaderDoc(JsonObject doc, String text) {
         Result res = lp.detectLanguage(text, this.languageCode);
         doc.addProperty("engine", res.engine);
-        doc.addProperty("languageCode", res.languageCode);
-        doc.addProperty("score", res.confidence);
+        doc.addProperty("languageCode", res.predLangCode);
+        doc.addProperty("score", res.predLangConf);
         return doc;
     }
 

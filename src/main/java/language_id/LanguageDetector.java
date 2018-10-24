@@ -85,7 +85,7 @@ public class LanguageDetector {
 
         Result res = mostCommon(results);
         if (res == null) {
-            return new Result(null, false, 0);
+            return new Result(null, false, 0, 0);
         } else {
             return res;
         }
@@ -111,11 +111,11 @@ public class LanguageDetector {
         LanguageCode code = new LanguageCode(lang, LanguageCode.CodeTypes.ISO_639_2);
 
         if (cld != null && cld.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            return cld.detectLanguage(text);
+            return cld.detectLanguage(text, code.getLanguageCode());
         } else if (lp.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            return lp.detectLanguage(text);
+            return lp.detectLanguage(text, code.getLanguageCode());
         } else if (tc.getSupportedLanguages().contains(code) || (code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
-            return tc.detectLanguage(text);
+            return tc.detectLanguage(text, code.getLanguageCode());
         } else {
             log.info("Language: " + lang + " not supported!");
         }
@@ -151,28 +151,9 @@ public class LanguageDetector {
         }
         return null;
     }
-
-    @Deprecated
-    public Result detectOld(String text, String lang) {
-        LanguageCode code = new LanguageCode(lang, LanguageCode.CodeTypes.ISO_639_2);
-
-        if (lang == null || lp.getSupportedLanguages().contains(code)) {
-            try {
-                return lp.detectLanguage(text);
-            } catch (IOException e) {
-                log.error(e);
-            } catch (ClassNotFoundException e) {
-                log.error(e);
-            }
-        } else {
-            return new Result(tc.categorize(Utils.removePunctuation(text)), true, 2);
-        }
-
-        return null;
-    }
+    
 
     private Result mostCommon(List<Result> list) {
-
         if (list == null || list.size() == 0) {
             return null;
         }
@@ -188,15 +169,16 @@ public class LanguageDetector {
         for (Result t : list) {
             Integer val = map_count.get(t);
             map_count.put(t, val == null ? 1 : val + 1);
-            Double conf = map_conf.get(t.languageCode);
-            map_conf.put(t.languageCode, conf == null ? t.confidence : conf + t.confidence);
-            if (t.confidence > max_confidence_score) {
-                max_confidence_score = t.confidence;
+            Double conf = map_conf.get(t.predLangCode);
+            map_conf.put(t.predLangCode, conf == null ? t.predLangConf : conf + t.predLangConf);
+            if (t.predLangConf > max_confidence_score) {
+                max_confidence_score = t.predLangConf;
                 maxScoring = t;
             }
         }
-
-        if (map_count.size() == list.size()) {  //if sizes are the same it means that all the values in list are unique
+        
+        // If sizes are the same it means that all the values in list are unique
+        if (map_count.size() == list.size()) {  
             return maxScoring;
         }
 
@@ -209,7 +191,7 @@ public class LanguageDetector {
 
         Result maj_vote = max.getKey();
 
-        double average_confidence = map_conf.get(maj_vote.languageCode) / max.getValue();
+        double average_confidence = map_conf.get(maj_vote.predLangCode) / max.getValue();
         //int count = max.getValue(); 
         //for (Result t: list) {
         //   if (t.languageCode.equals(maj_vote.languageCode)){
@@ -219,7 +201,7 @@ public class LanguageDetector {
         //average_confidence /= count;
 
         maj_vote.engine = "maj_vote";
-        maj_vote.confidence = average_confidence;
+        maj_vote.predLangConf = average_confidence;
         return maj_vote;
     }
 }
