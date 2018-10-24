@@ -90,7 +90,7 @@ public class Cld2 extends LanguageClassifier {
         }
         double predLangConf = percent3[0] / 100.0;
         double targetLangConf = 0.0;
-        if (predLangCode.equals(targetLangCode)) {
+        if (targetLangCode.equals(predLangCode)) {
             targetLangConf = predLangConf;
         } else {
             targetLangConf = 0.0;
