@@ -106,12 +106,6 @@ public class Cld2 extends LanguageClassifier {
                 null, // Supposed to be a vector of ResultChunks, but it is not direct to pass vectors.
                 textBytes,
                 isReliable);
-        
-        if (language3[1] != Language.UNKNOWN_LANGUAGE) {
-            System.err.println(language3[0] + "\t" + language3[1] + "\t" + language3[2] + "\t" + language3[3] + "\t" + language3[4] + "\t" + language3[5] + "\t" + language3[6] + "\t" + language3[7] + "\t" + language3[8] + "\t" + language3[9]);
-            System.err.println(percent3[0] + "\t" + percent3[1] + "\t" + percent3[2]);
-            System.err.println(normalizedScore3[0] + "\t" + normalizedScore3[1] + "\t" + normalizedScore3[2]);
-        }
 
         LanguageCode lc = new LanguageCode(getLanguageCode(language), LanguageCode.CodeTypes.ISO_639_1);
         String predLangCode= lc.getLanguageCode();
@@ -123,7 +117,15 @@ public class Cld2 extends LanguageClassifier {
         if (targetLangCode.equals(predLangCode)) {
             targetLangConf = predLangConf;
         } else {
-            targetLangConf = 0.0;
+            LanguageCode lc1 = new LanguageCode(getLanguageCode(language3[1]), LanguageCode.CodeTypes.ISO_639_1);
+            LanguageCode lc2 = new LanguageCode(getLanguageCode(language3[2]), LanguageCode.CodeTypes.ISO_639_1);
+            String lang1 = lc1.getLanguageCode();
+            String lang2 = lc2.getLanguageCode();
+            if (targetLangCode.equals(lang1)) {
+                targetLangConf = percent3[1] / 100.0;
+            } else if (targetLangCode.equals(lang2)) {
+                targetLangConf = percent3[2] / 100.0;
+            }
         }
         return new Result(predLangCode, isReliable[0], predLangConf, targetLangConf, "cld2");
 
