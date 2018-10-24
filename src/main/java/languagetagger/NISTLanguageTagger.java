@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -86,7 +87,10 @@ public class NISTLanguageTagger {
             String confidence = result.getThird();
             if (evalFlag) {
                 if (predictedLang.equals(this.languageCode)) {
-                    bw.write(docId + "\t" + confidence + "\n");
+                    bw.write(docId + "\tY\t" + confidence + "\n");
+                }
+                else {
+                    bw.write(docId + "\tN\t" + confidence + "\n");
                 }
             } else {
                 bw.write(docId + "\t" + predictedLang + "\t" + confidence + "\n");
@@ -119,39 +123,27 @@ public class NISTLanguageTagger {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
                 String docId = filename.substring(0, filename.indexOf("."));
-                SimpleEntry<String, Double> result = tag_document_path(dirIn + "/" + filename, dirOut + "/" + filename);
-                String predictedLang = result.getKey();
-                String confidence = String.format("%.5f", result.getValue());
-
-                results.add(new Triplet<>(docId, predictedLang, confidence));
+                Triple<String, Double, Double> result = verify_document_language(dirIn + "/" + filename, dirOut + "/" + filename);
+                String predictedLang = result.getLeft();
+                String targetLangConf = String.format("%.5f", result.getRight());
+                results.add(new Triplet<>(docId, predictedLang, targetLangConf));
             }
         }
         write_output_reports(dirOut, results);
     }
 
-    public SimpleEntry<String, Double> tag_document_path(String pathFileIn, String pathFileOut) throws Exception {
+    public Triple<String, Double, Double> verify_document_language(String pathFileIn, String pathFileOut) throws Exception {
         byte[] encoded = Files.readAllBytes(Paths.get(pathFileIn));
         String document_string = new String(encoded, StandardCharsets.UTF_8);
-        JsonObject tagged_document_json = tag_document_string(document_string);
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String prettyJson = gson.toJson(tagged_document_json);
-
-        File fileOut = new File(pathFileOut);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
-        bw.write(prettyJson);
-        bw.close();
-        //change permission to 777 for all the users
-        fileOut.setExecutable(true, false);
-        fileOut.setReadable(true, false);
-        fileOut.setWritable(true, false);
-
-        String predictedLang = tagged_document_json.get("languageCode").getAsString();
-        Double confidence = tagged_document_json.get("score").getAsDouble();
-        return new SimpleEntry<>(predictedLang, confidence);
+        
+        Result docResult = tag_document_string(document_string, pathFileOut);
+        String predictedLang = docResult.predLangCode;
+        Double predLangConf = docResult.predLangConf;
+        Double targetConf = docResult.targetLangConf;
+        return new Triple<>(predictedLang, predLangConf, targetConf);
     }
 
-    public JsonObject tag_document_string(String document) {
+    public JsonObject tag_document_string(String document, String pathFileOut) throws Exception {
         String[] lines = document.split("\n");
 
         String text = "";
@@ -166,7 +158,24 @@ public class NISTLanguageTagger {
         }
         JsonObject jsonDoc = new JsonObject();
         jsonDoc.add("sentences", list);
-        jsonDoc = outputHeaderDoc(jsonDoc, text);
+        Result docResult = outputHeaderDoc(jsonDoc, text);
+        
+        jsonDoc.addProperty("engine", docResult.engine);
+        jsonDoc.addProperty("languageCode", docResult.predLangCode);
+        jsonDoc.addProperty("score", docResult.predLangConf);
+        
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = gson.toJson(jsonDoc);
+
+        File fileOut = new File(pathFileOut);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
+        bw.write(prettyJson);
+        bw.close();
+        //change permission to 777 for all the users
+        fileOut.setExecutable(true, false);
+        fileOut.setReadable(true, false);
+        fileOut.setWritable(true, false);
+        
         return jsonDoc;
     }
 
@@ -197,12 +206,9 @@ public class NISTLanguageTagger {
         return anchors;
     }
 
-    private JsonObject outputHeaderDoc(JsonObject doc, String text) {
+    private Result outputHeaderDoc(JsonObject doc, String text) {
         Result res = lp.detectLanguage(text, this.languageCode);
-        doc.addProperty("engine", res.engine);
-        doc.addProperty("languageCode", res.predLangCode);
-        doc.addProperty("score", res.predLangConf);
-        return doc;
+        return res;
     }
 
     private JsonArray processLine(String line) {
