@@ -201,7 +201,7 @@ public class FingerPrint extends Hashtable<String, Integer> {
     }
     
     private double computeConfidence(int distance, long sumDistances, int size) {
-        return ((size+1) * 1.0 / size)  - (distance * 1.0 / sumDistances);
+        return (sumDistances - distance) * (1.0 / (size - 1)) / sumDistances;
     }
 
     public Map<String, Integer> getCategoryDistances() {
