@@ -122,9 +122,9 @@ public class NISTLanguageTagger {
             if (listOfFiles[i].isFile()) {
                 String filename = listOfFiles[i].getName();
                 String docId = filename.substring(0, filename.indexOf("."));
-                Triple<String, Double, Double> result = verify_document_language(dirIn + "/" + filename, dirOut + "/" + filename);
-                String predictedLang = result.getLeft();
-                String targetLangConf = String.format("%.5f", result.getRight());
+                Triplet<String, Double, Double> result = verify_document_language(dirIn + "/" + filename, dirOut + "/" + filename);
+                String predictedLang = result.getFirst();
+                String targetLangConf = String.format("%.5f", result.getThird());
                 results.add(new Triplet<>(docId, predictedLang, targetLangConf));
             }
         }
