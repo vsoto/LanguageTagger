@@ -4,8 +4,6 @@ import main.java.language_id.cld.Cld2;
 import main.java.language_id.lingpipe.LingPipe;
 import main.java.language_id.textcat.TextCategorizer;
 
-import main.java.Utils.Utils;
-
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -19,16 +17,13 @@ import java.util.*;
  */
 public class LanguageDetector {
 
+    Logger log = Logger.getLogger(LanguageDetector.class);
     /* LingPipe classifier */
     LingPipe lp = new LingPipe("completeModel3.gm");
     /* CLD2 Classifier */
     Cld2 cld = null;
-
     /* TextCat Classifier */
     TextCategorizer tc = null;
-    private ArrayList<String> lpLangs = new ArrayList<String>();
-    Logger log = Logger.getLogger(LanguageDetector.class);
-
 
     /* Constructor */
     public LanguageDetector() {
@@ -63,32 +58,24 @@ public class LanguageDetector {
         if (cld == null) { //if we can't load CLD no point in doing majority vote
             return detectLanguage(text, target_lang);
         }
-        
+
         ArrayList<Result> results = new ArrayList<>();
         LanguageCode target_code = new LanguageCode(target_lang, LanguageCode.CodeTypes.ISO_639_2);
 
         if (lp.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && lp.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = lp.detectLanguage(text, target_code.getLanguageCode());
-            System.err.println("LP");
-            System.err.println(pred);
             results.add(pred);
         }
-        
+
         if (tc.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && tc.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = tc.detectLanguage(text, target_code.getLanguageCode());
             results.add(pred);
         }
-        
+
         if (cld.getSupportedLanguages().contains(target_code) || (target_code.getLanguageCode().equals("swa") && cld.getSupportedLanguages().contains(new LanguageCode("swh", LanguageCode.CodeTypes.ISO_639_2)))) {
             Result pred = cld.detectLanguage(text, target_code.getLanguageCode());
-            if (pred.predLangConf != pred.targetLangConf) {
-                System.err.println("CLD");
-                System.err.println(pred);
-            }
-            
             results.add(pred);
         }
-        
 
         Result res = mostCommon(results);
         if (res == null) {
@@ -158,10 +145,9 @@ public class LanguageDetector {
         }
         return null;
     }
-    
 
     private Result mostCommon(List<Result> list) {
-        if (list == null || list.size() == 0) {
+        if (list == null || list.isEmpty()) {
             return null;
         }
 
@@ -175,19 +161,23 @@ public class LanguageDetector {
         double max_confidence_score = -10.0;
         double avg_target_conf = 0.0;
         for (Result t : list) {
+            // Increase +1 the count of votes for a given language
             Integer val = map_count.get(t);
             map_count.put(t, val == null ? 1 : val + 1);
+            // Aggregate the confidence for that language
             Double conf = map_conf.get(t.predLangCode);
             map_conf.put(t.predLangCode, conf == null ? t.predLangConf : conf + t.predLangConf);
+            // Keep track of the highest confidence score from a vote
             if (t.predLangConf > max_confidence_score) {
                 max_confidence_score = t.predLangConf;
                 maxScoring = t;
             }
+            // Aggregate the target-langauge confidence.
             avg_target_conf += t.targetLangConf;
         }
         avg_target_conf /= list.size();
         // If sizes are the same it means that all the values in list are unique
-        if (map_count.size() == list.size()) {  
+        if (map_count.size() == list.size()) {
             maxScoring.targetLangConf = avg_target_conf;
             return maxScoring;
         }
@@ -198,19 +188,8 @@ public class LanguageDetector {
                 max = e;
             }
         }
-
         Result maj_vote = max.getKey();
-
         double average_confidence = map_conf.get(maj_vote.predLangCode) / max.getValue();
-        
-        //int count = max.getValue(); 
-        //for (Result t: list) {
-        //   if (t.languageCode.equals(maj_vote.languageCode)){
-        //   	average_confidence += t.confidence;
-        //   }
-        //}
-        //average_confidence /= count;
-
         maj_vote.engine = "maj_vote";
         maj_vote.predLangConf = average_confidence;
         maj_vote.targetLangConf = avg_target_conf;
