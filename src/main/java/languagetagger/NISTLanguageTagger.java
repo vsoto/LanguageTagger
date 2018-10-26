@@ -78,7 +78,7 @@ public class NISTLanguageTagger {
     private void write_report(String pathFileOut, ArrayList<Triplet<String, String, String>> results, boolean evalFlag) throws Exception {
         File fileOut = new File(pathFileOut);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileOut), StandardCharsets.UTF_8));
-        bw.write(this.nistCode + "\n");
+        // bw.write(this.nistCode + "\n");
 
         for (Triplet<String, String, String> result : results) {
             String docId = result.getFirst();
@@ -108,7 +108,7 @@ public class NISTLanguageTagger {
             throw new Exception("Couldn't create report directory.");
         }
         set_permissions(reportDirPath);
-        write_report(dirOut + "/report/l-" + this.nistCode + ".tsv", results, true);
+        write_report(dirOut + "/report/" + this.nistCode + ".tsv", results, true);
         write_report(dirOut + "/report/results.log", results, false);
     }
 
