@@ -92,7 +92,12 @@ public class NISTLanguageTagger {
                     bw.write(docId + "\tN\t" + confidence + "\n");
                 }
             } else {
-                bw.write(docId + "\t" + predictedLang + "\t" + confidence + "\n");
+                if (predictedLang.equals(this.languageCode)) {
+                    bw.write(docId + "\tY\t1.0\n");
+                }
+                else {
+                    bw.write(docId + "\tN\t0.0\n");
+                }
             }
         }
         bw.close();
