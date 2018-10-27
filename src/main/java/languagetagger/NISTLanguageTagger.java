@@ -86,18 +86,19 @@ public class NISTLanguageTagger {
             String confidence = result.getThird();
             if (evalFlag) {
                 if (predictedLang.equals(this.languageCode)) {
-                    bw.write(docId + "\tY\t" + confidence + "\n");
-                }
-                else {
-                    bw.write(docId + "\tN\t" + confidence + "\n");
-                }
-            } else {
-                if (predictedLang.equals(this.languageCode)) {
                     bw.write(docId + "\tY\t1.0\n");
                 }
                 else {
                     bw.write(docId + "\tN\t0.0\n");
                 }
+            } else {
+                if (predictedLang.equals(this.languageCode)) {
+                    bw.write(docId + "\tY\t" + confidence + "\n");
+                }
+                else {
+                    bw.write(docId + "\tN\t" + confidence + "\n");
+                }
+                
             }
         }
         bw.close();
